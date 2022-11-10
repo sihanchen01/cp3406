@@ -24,17 +24,18 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:onClick="checkGuess"
         android:text="Button" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/userInput"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:autofillHints=""
+        android:importantForAutofill="no"
+        android:hint="Guess a number from 1 - 10"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+        android:inputType="number"/>
 </LinearLayout>
