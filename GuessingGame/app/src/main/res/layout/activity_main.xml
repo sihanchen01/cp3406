@@ -24,12 +24,10 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:onClick="checkGuess"
-        android:text="Button" />
-
+        android:layout_height="wrap_content"
+        android:text="Hello" />
+    
     <EditText
         android:id="@+id/userInput"
         android:layout_width="match_parent"
@@ -38,4 +36,13 @@
         android:hint="Guess a number from 1 - 10"
         android:ems="10"
         android:inputType="number"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="48dp"
+        android:onClick="checkGuess"
+        android:text="Check Answer" />
+
 </LinearLayout>
