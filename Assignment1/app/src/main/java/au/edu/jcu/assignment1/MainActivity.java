@@ -84,12 +84,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 uploadImageLauncher.launch(galleryIntent);
-//                startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
                 break;
             case R.id.bUpload:
-//                Bitmap image = ((BitmapDrawable) imageToUpload.getDrawable()).getBitmap();
                 uploadImage();
-//                resetFields();
                 break;
         }
     }
@@ -99,14 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageToUpload.setImageResource(0);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null){
-//            Uri selectedImage = data.getData();
-//            imageToUpload.setImageURI(selectedImage);
-//        }
-//    }
 
     ActivityResultLauncher<Intent> uploadImageLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -121,38 +110,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } );
 
-//    private class UploadImage extends AsyncTask<Void, Void, Void> {
-//
-//        Bitmap image;
-//        String name;
-//
-//        public UploadImage(Bitmap image, String name) {
-//            this.image = image;
-//            this.name = name;
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//            image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-//            String encodedImage = Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT);
-//
-//            List<Pair<String, String>> dataToSend = new ArrayList<>();
-//            dataToSend.add(new Pair<>("image", encodedImage));
-//            dataToSend.add(new Pair<>("name", name));
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void unused) {
-//            super.onPostExecute(unused);
-//        }
-//    }
-//
-//    private HttpParams getHttpRequestParams(){
-//        HttpParams httpRequestParams = new BasicHttpParams();
-//    }
 
     private String getFileExtension (Uri uri){
         ContentResolver cr = getContentResolver();
