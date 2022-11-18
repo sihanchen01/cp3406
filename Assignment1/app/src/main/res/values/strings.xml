@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Assignment1</string>
     <string name="reading_tracker">Reading Tracker</string>
+    <string name="add_image_for_your_book">Add image for your book:</string>
+    <string name="name_for_the_book">Name for the book</string>
+    <string name="upload">Upload</string>
 </resources>

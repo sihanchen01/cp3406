@@ -30,8 +30,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         uploadProgress = (ProgressBar) findViewById(R.id.progress_bar);
 
         storageRef = FirebaseStorage.getInstance().getReference("uploads");
-        databaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        databaseRef = FirebaseDatabase.getInstance().getReference();
 
         imageToUpload.setOnClickListener(this);
         bUploadImage.setOnClickListener(this);
@@ -137,7 +139,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Upload upload = new Upload(uploadImageName.getText().toString().trim(),
                                     taskSnapshot.getUploadSessionUri().toString());
                             String uploadId = databaseRef.push().getKey();
-                            databaseRef.child(uploadId).setValue(upload);
+                            databaseRef.child("Event Details").child(uploadId).setValue(upload)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            Toast.makeText(MainActivity.this,
+                                                    "Data uploaded successfully",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

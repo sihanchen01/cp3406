@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">UploadToFireDB</string>
+    <string name="book_list">Here are your reading list</string>
+</resources>
