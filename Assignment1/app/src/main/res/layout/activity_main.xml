@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="6sp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/reading_tracker"
+        android:textSize="36dp"
+        android:paddingHorizontal="4sp"
+        android:layout_marginBottom="12sp"
+    />
+
+    <ImageView
+        android:background="@drawable/black"
+        android:id="@+id/imageToUpload"
+        android:layout_width="256sp"
+        android:layout_height="256sp"
+        android:layout_marginBottom="12sp"
+        android:layout_gravity="center_horizontal" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="12sp"
+        android:layout_marginHorizontal="48sp"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/etUploadName"
+        android:hint="Name for the image"
+        android:layout_width="240sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="12sp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/bUpload"
+        android:text="Upload"
+        android:layout_width="120sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

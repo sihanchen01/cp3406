@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "723570508159",
+    "project_id": "assignment1-c5fbb",
+    "storage_bucket": "assignment1-c5fbb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723570508159:android:4c8d7e49d6205bffe89a4a",
+        "android_client_info": {
+          "package_name": "au.edu.jcu.assignment1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "723570508159-j1a2uo73mj3v4jf0pgfdv67f9nc21c19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq647pZmWu31GDRW8zymKvSS0xLXkLuKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "723570508159-j1a2uo73mj3v4jf0pgfdv67f9nc21c19.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
