@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">UploadToFireDB</string>
-    <string name="book_list">Here are your reading list</string>
+    <string name="currently_no_book">There are no book in your reading list, go ahead add a new book</string>
+    <string name="book_name">Name of the book</string>
+    <string name="update">update</string>
+    <string name="page_number">page number</string>
+    <string name="name">name</string>
+    <string name="so_far_you_read">So far, you read</string>
+    <string name="get_page">Get page #</string>
+    <string name="n">N</string>
+    <string name="v">V</string>
+    <string name="_0">0</string>
+    <string name="add_new_book">Add new book</string>
+
 </resources>

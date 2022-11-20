@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,13 +18,33 @@ public class MainActivity extends AppCompatActivity {
 
     private static Random random;
 
+    private Button bSend;
+    private EditText etText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toast.makeText(this, "MainActivity: on create called", Toast.LENGTH_SHORT).show();
 
+        bSend = findViewById(R.id.bSend);
+        etText = findViewById(R.id.etText);
+
+        bSend.setOnClickListener(view -> {
+            String textToSend = getTextToSend();
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.setType("text/plain");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, textToSend);
+
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+        });
+
         random = new Random(0); // force the same sequence of "random numbers"
+    }
+
+    private String getTextToSend() {
+        return etText.getText().toString();
     }
 
     @Override
