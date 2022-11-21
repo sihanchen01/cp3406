@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.journeyapps.barcodescanner.ScanContract;
@@ -51,9 +55,29 @@ public class AddNewBookActivity extends AppCompatActivity {
         bAddBook = findViewById(R.id.bAddBook);
         bScan = findViewById(R.id.bScan);
 
+        ActivityResultLauncher <Intent> uploadImageLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        ivBookImage.setImageURI(data.getData());
+                    }
+                }
+        );
+
+        ivBookImage.setOnClickListener(view -> {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+            uploadImageLauncher.launch(galleryIntent);
+        });
+
+
         bAddBook.setOnClickListener(view -> {
             String bookName = etBookName.getText().toString();
             if (!bookName.isEmpty()) {
+
+
                 Intent bookInfo = new Intent(this, MainActivity.class);
                 bookInfo.putExtra("bookName", bookName);
                 setResult(RESULT_OK, bookInfo);
