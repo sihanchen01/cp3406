@@ -25,6 +25,7 @@
         android:id="@+id/etBookName"
         android:layout_width="180sp"
         android:layout_height="48dp"
+        android:textSize="12sp"
         android:hint="@string/name"
 
         app:layout_constraintBottom_toTopOf="@+id/etPageNumber"
