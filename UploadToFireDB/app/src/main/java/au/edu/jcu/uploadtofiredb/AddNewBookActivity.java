@@ -1,6 +1,8 @@
 package au.edu.jcu.uploadtofiredb;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
+import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -73,7 +76,8 @@ public class AddNewBookActivity extends AppCompatActivity {
 //            barcodeLauncher.launch(options);
 
             // to test api, as no real phone to scan barcode
-            bookBarcode = "9781472280848";
+            // TODO: remove hardcode book barcode
+            bookBarcode = "9781788168595";
 
             String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
             new JsonTask().execute(apiUrl);
@@ -155,14 +159,51 @@ public class AddNewBookActivity extends AppCompatActivity {
             super.onPostExecute(result);
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                String title = jsonObject.getJSONArray("products").getJSONObject(0).getString("title");
-                etBookName.setText(title);
+                // Get book image and title from API
+                String bookTitle = jsonObject.getJSONArray("products").getJSONObject(0)
+                        .getString("title");
+                String imageUrl = jsonObject.getJSONArray("products").getJSONObject(0)
+                        .getJSONArray("images").getString(0);
+                // Set image and title in Views
+                new ImageLoadTask(imageUrl, ivBookImage).execute();
+                etBookName.setText(bookTitle);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             if (pd.isShowing()){
                 pd.dismiss();
             }
+        }
+    }
+
+    private class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
+        private String url;
+        private ImageView imageView;
+
+        public ImageLoadTask (String url, ImageView imageView) {
+            this.url = url;
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            try {
+                URL urlConnection = new URL(url);
+                HttpURLConnection connection = (HttpURLConnection) urlConnection .openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                return BitmapFactory.decodeStream(input);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            imageView.setImageBitmap(bitmap);
         }
     }
 }
