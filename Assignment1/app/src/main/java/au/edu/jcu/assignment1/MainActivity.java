@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void uploadImage() {
-        databaseRef.child("Event").setValue("123");
         if (mImageUri != null) {
             StorageReference fileRef = storageRef.child(System.currentTimeMillis() + "."
                     + getFileExtension(mImageUri));

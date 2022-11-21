@@ -3,7 +3,9 @@ package au.edu.jcu.uploadtofiredb;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +18,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -40,6 +49,10 @@ public class AddNewBookActivity extends AppCompatActivity {
     Button bScan;
     Button bAddBook;
 
+    private DatabaseReference databaseRefImageUpload;
+    private StorageReference storageRefImageUpload;
+
+    private Uri myImageUri;
     private String bookBarcode;
 
     private final String BARCODE_URL = "https://api.barcodelookup.com/v3/products?barcode=";
@@ -55,12 +68,16 @@ public class AddNewBookActivity extends AppCompatActivity {
         bAddBook = findViewById(R.id.bAddBook);
         bScan = findViewById(R.id.bScan);
 
+        databaseRefImageUpload = FirebaseDatabase.getInstance().getReference("imageUpload");
+        storageRefImageUpload = FirebaseStorage.getInstance().getReference("imageUpload");
+
         ActivityResultLauncher <Intent> uploadImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
-                        ivBookImage.setImageURI(data.getData());
+                        myImageUri = data.getData();
+                        ivBookImage.setImageURI(myImageUri);
                     }
                 }
         );
@@ -76,7 +93,8 @@ public class AddNewBookActivity extends AppCompatActivity {
         bAddBook.setOnClickListener(view -> {
             String bookName = etBookName.getText().toString();
             if (!bookName.isEmpty()) {
-
+                // upload book image to firebaseStorage and log URL to DB
+                uploadImage();
 
                 Intent bookInfo = new Intent(this, MainActivity.class);
                 bookInfo.putExtra("bookName", bookName);
@@ -109,6 +127,43 @@ public class AddNewBookActivity extends AppCompatActivity {
         });
 
         // TODO: allow user to upload book image
+    }
+
+    private void uploadImage() {
+        // upload book image to firebaseStorage and log URL to DB
+        if (myImageUri != null){
+            StorageReference fileReference = storageRefImageUpload.child(System.currentTimeMillis()
+                    + "." + getFileExtension(myImageUri));
+
+            myUploadTask = fileReference.putFile(myImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+                            Upload upload = new Upload(etBookName.getText().toString().trim(),
+                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
+                            String uploadId = mDatabaseRef.push().getKey();
+                            mDatabaseRef.child(uploadId).setValue(upload);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            mProgressBar.setProgress((int) progress);
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher =
