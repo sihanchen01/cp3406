@@ -108,20 +108,20 @@ public class AddNewBookActivity extends AppCompatActivity {
         // Use camera to scan barcode to get book info
         bScan.setOnClickListener(view -> {
 
-//            ScanOptions options = new ScanOptions();
-//            options.setPrompt("Scan book barcode");
-//            options.setBeepEnabled(true);
-//            options.setCameraId(0);
-//            options.setOrientationLocked(false);
-//
-//            barcodeLauncher.launch(options);
+            ScanOptions options = new ScanOptions();
+            options.setPrompt("Scan book barcode");
+            options.setBeepEnabled(true);
+            options.setCameraId(0);
+            options.setOrientationLocked(false);
+
+            barcodeLauncher.launch(options);
 
             // to test api, as no real phone to scan barcode
             // TODO: remove hardcode book barcode
-            bookBarcode = "9781350168435";
+//            bookBarcode = "9781350168435";
 
-            String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
-            new JsonTask().execute(apiUrl);
+//            String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
+//            new JsonTask().execute(apiUrl);
 
         });
     }
@@ -194,8 +194,8 @@ public class AddNewBookActivity extends AppCompatActivity {
                         "Scan is cancelled", Toast.LENGTH_LONG).show();
             } else {
                 bookBarcode = result.getContents();
-                Toast.makeText(AddNewBookActivity.this,
-                        "Scanned:" + result.getContents(), Toast.LENGTH_LONG).show();
+                String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
+                new JsonTask().execute(apiUrl);
             }
         });
 
@@ -269,6 +269,9 @@ public class AddNewBookActivity extends AppCompatActivity {
                 etBookName.setText(bookName);
             } catch (JSONException e) {
                 e.printStackTrace();
+            } catch (NullPointerException e) {
+                Toast.makeText(AddNewBookActivity.this,
+                        "Invalid barcode, try another one.", Toast.LENGTH_SHORT).show();
             }
             if (pd.isShowing()){
                 pd.dismiss();
