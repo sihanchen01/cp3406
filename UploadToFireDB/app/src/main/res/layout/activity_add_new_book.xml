@@ -33,7 +33,9 @@
         app:layout_constraintBottom_toTopOf="@+id/bAddBook"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivBookImage" />
+        app:layout_constraintTop_toBottomOf="@+id/ivBookImage"
+        android:autofillHints=""
+        android:inputType="" />
 
     <Button
         android:id="@+id/bAddBook"

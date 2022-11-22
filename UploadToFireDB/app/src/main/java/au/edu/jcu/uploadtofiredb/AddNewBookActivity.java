@@ -1,25 +1,26 @@
 package au.edu.jcu.uploadtofiredb;
 
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -28,14 +29,11 @@ import com.google.firebase.storage.UploadTask;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-
-import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -54,6 +52,7 @@ public class AddNewBookActivity extends AppCompatActivity {
 
     private Uri myImageUri;
     private String bookBarcode;
+    private String bookName;
 
     private final String BARCODE_URL = "https://api.barcodelookup.com/v3/products?barcode=";
     private final String API_KEY = "ql7sbxolz5lbsihyxuda3lhifvyi9w";
@@ -91,7 +90,7 @@ public class AddNewBookActivity extends AppCompatActivity {
 
 
         bAddBook.setOnClickListener(view -> {
-            String bookName = etBookName.getText().toString();
+            bookName = etBookName.getText().toString();
             if (!bookName.isEmpty()) {
                 // upload book image to firebaseStorage and log URL to DB
                 uploadImage();
@@ -119,50 +118,72 @@ public class AddNewBookActivity extends AppCompatActivity {
 
             // to test api, as no real phone to scan barcode
             // TODO: remove hardcode book barcode
-            bookBarcode = "9781788168595";
+            bookBarcode = "9781350168435";
 
             String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
             new JsonTask().execute(apiUrl);
 
         });
+    }
 
-        // TODO: allow user to upload book image
+    private String getFileExtension(Uri uri) {
+        ContentResolver cr = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(uri));
     }
 
     private void uploadImage() {
         // upload book image to firebaseStorage and log URL to DB
-        if (myImageUri != null){
-            StorageReference fileReference = storageRefImageUpload.child(System.currentTimeMillis()
-                    + "." + getFileExtension(myImageUri));
-
-            myUploadTask = fileReference.putFile(myImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-                            Upload upload = new Upload(etBookName.getText().toString().trim(),
-                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mProgressBar.setProgress((int) progress);
-                        }
-                    });
-        } else {
-            Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
+        // set myImageUri to default image if user didn't provide one
+        if (myImageUri == null){
+            myImageUri = Uri.parse("android.resource://" + AddNewBookActivity.this.getPackageName()
+                    + "/drawable/image");
         }
+
+        StorageReference fileReference = storageRefImageUpload.child(System.currentTimeMillis()
+                + "." + getFileExtension(myImageUri));
+
+        UploadTask uploadTask = fileReference.putFile(myImageUri);
+
+        uploadTask.continueWithTask(task -> {
+            if (!task.isSuccessful()){
+                throw task.getException();
+            }
+
+            return fileReference.getDownloadUrl();
+        }).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+                Uri downloadUri = task.getResult();
+                if (downloadUri != null) {
+                    Upload upload = new Upload(etBookName.getText().toString().trim(),
+                            downloadUri.toString());
+                    String uploadId = databaseRefImageUpload.push().getKey();
+                    databaseRefImageUpload.child(uploadId).setValue(upload);
+                }
+             } else {
+                Toast.makeText(AddNewBookActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        fileReference.putFile(myImageUri)
+//                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                        Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
+//                        Upload upload = new Upload(etBookName.getText().toString().trim(),
+//                                taskSnapshot.getMetadata().getReference().getDownloadUrl())
+//                        String uploadId = databaseRefImageUpload.push().getKey();
+//                        databaseRefImageUpload.child(uploadId).setValue(upload);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(AddNewBookActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
     }
 
@@ -239,13 +260,13 @@ public class AddNewBookActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 // Get book image and title from API
-                String bookTitle = jsonObject.getJSONArray("products").getJSONObject(0)
+                bookName = jsonObject.getJSONArray("products").getJSONObject(0)
                         .getString("title");
                 String imageUrl = jsonObject.getJSONArray("products").getJSONObject(0)
                         .getJSONArray("images").getString(0);
                 // Set image and title in Views
                 new ImageLoadTask(imageUrl, ivBookImage).execute();
-                etBookName.setText(bookTitle);
+                etBookName.setText(bookName);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -256,8 +277,8 @@ public class AddNewBookActivity extends AppCompatActivity {
     }
 
     private class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-        private String url;
-        private ImageView imageView;
+        private final String url;
+        private final ImageView imageView;
 
         public ImageLoadTask (String url, ImageView imageView) {
             this.url = url;
@@ -282,7 +303,16 @@ public class AddNewBookActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            myImageUri = getImageUriFromBitmap(AddNewBookActivity.this, bitmap, bookName);
             imageView.setImageBitmap(bitmap);
         }
+    }
+
+    public Uri getImageUriFromBitmap (Context inContext, Bitmap inImage, String title) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage,
+                title, null);
+        return Uri.parse(path);
     }
 }

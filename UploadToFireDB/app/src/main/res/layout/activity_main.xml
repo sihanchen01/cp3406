@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -25,7 +24,6 @@
         android:id="@+id/etBookName"
         android:layout_width="180sp"
         android:layout_height="48dp"
-        android:textSize="12sp"
         android:hint="@string/name"
 
         app:layout_constraintBottom_toTopOf="@+id/etPageNumber"
@@ -41,7 +39,7 @@
         android:layout_height="48dp"
         android:hint="@string/page_number"
 
-        app:layout_constraintBottom_toTopOf="@id/bUpload"
+        app:layout_constraintBottom_toTopOf="@id/bUpdate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etBookName"
@@ -49,7 +47,7 @@
         tools:ignore="TextFields" />
 
     <Button
-        android:id="@+id/bUpload"
+        android:id="@+id/bUpdate"
         android:layout_width="180dp"
         android:layout_height="48dp"
         android:text="@string/update"
@@ -59,7 +57,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etPageNumber" />
 
-    <!--  TODO: turn reading list into a clickable list of items, and maybe show book cover  -->
     <TextView
         android:id="@+id/tvReadingList"
         android:layout_width="362dp"
@@ -75,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bUpload" />
+        app:layout_constraintTop_toBottomOf="@id/bUpdate" />
 
     <Button
         android:id="@+id/bSortByName"
@@ -86,7 +83,7 @@
         app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
         app:layout_constraintEnd_toStartOf="@+id/bSortByValue"
         app:layout_constraintStart_toStartOf="@+id/tvReadingList"
-        app:layout_constraintTop_toBottomOf="@+id/bUpload" />
+        app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <Button
         android:id="@+id/bSortByValue"
@@ -96,11 +93,21 @@
 
         app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
         app:layout_constraintStart_toEndOf="@id/bSortByName"
+        app:layout_constraintEnd_toStartOf="@+id/bShowCollection"
+        app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
+
+    <Button
+        android:id="@+id/bShowCollection"
+        android:layout_width="48sp"
+        android:layout_height="48sp"
+        android:text="c"
+
+        app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
+        app:layout_constraintStart_toEndOf="@id/bSortByValue"
         app:layout_constraintEnd_toEndOf="@+id/tvReadingList"
-        app:layout_constraintTop_toBottomOf="@+id/bUpload" />
+        app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <!--  TODO: sort by time added  -->
-
 
     <Button
         android:id="@+id/bAddNewBook"

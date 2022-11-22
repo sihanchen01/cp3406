@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     Button bAddNewBook;
     Button bSortByName;
     Button bSortByValue;
+    Button bShowCollection;
     EditText etBookName;
     EditText etPageNumber;
     TextView tvReadingList;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private int pageRead;
     private int monthlyGoal = 85;
     private boolean descOrder = false;
+
 
     public static final String FAIL_MSG = "Failed to retrieve data!";
     public static final String BOOK_DOES_NOT_EXIST = "This book does not exist in your list";
@@ -72,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bUpdate = findViewById(R.id.bUpload);
+        bUpdate = findViewById(R.id.bUpdate);
         bAddNewBook = findViewById(R.id.bAddNewBook);
         bSortByName = findViewById(R.id.bSortByName);
         bSortByValue = findViewById(R.id.bSortByValue);
+        bShowCollection = findViewById(R.id.bShowCollection);
         etBookName = findViewById(R.id.etBookName);
         etPageNumber = findViewById(R.id.etPageNumber);
         tvPagesRead = findViewById(R.id.tvPagesRead);
@@ -200,6 +203,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // TODO: add sort by time added function
+
+        bShowCollection.setOnClickListener(view -> {
+            Intent showCollectionIntent = new Intent(this, ShowCollection.class);
+            startActivity(showCollectionIntent);
+        });
     }
 
     @SuppressLint("DefaultLocale")
