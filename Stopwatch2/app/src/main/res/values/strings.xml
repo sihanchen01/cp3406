@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Stopwatch</string>
+    <string name="settings">settings</string>
+    <string name="start">start</string>
+    <string name="pause">pause</string>
+    <string name="_00_00_00">00:00:00</string>
+    <string name="done">done</string>
+    <string name="speed_value_for_the_stopwatch"><font size="12">speed value for the stopwatch (accept positive integer, default 1000, the lower, the faster)</font></string>
+    <string name="or_use_seekbar_to_change_speed_range_from_1_to_2000">or use seekbar to change speed, range from 1 to 2000</string>
+</resources>

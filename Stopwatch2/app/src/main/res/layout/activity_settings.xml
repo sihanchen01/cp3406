@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/root"
+    tools:context=".SettingsActivity">
+
+    <EditText
+        android:id="@+id/etSpeedValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/speed_value_for_the_stopwatch" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="24sp"
+        android:layout_gravity="center"
+        android:text="@string/or_use_seekbar_to_change_speed_range_from_1_to_2000" />
+
+    <SeekBar
+        android:id="@+id/sbSpeedValue"
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="24sp"
+        android:layout_gravity="center"
+        android:scaleX="2"
+        android:scaleY="2"
+        android:max="2000"
+        android:progress="1000"
+        android:min="1"/>
+
+
+    <Button
+        android:id="@+id/bDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/done"/>
+
+</LinearLayout>
