@@ -54,6 +54,13 @@ public class AddNewBookActivity extends AppCompatActivity {
     private String bookBarcode;
     private String bookName;
 
+    /*
+    API url and key for 'barcodelookup.com', it takes barcode input and
+    returns book info in json format.
+
+    ! IMPORTANT: THE API COULD FAIL AS IT HAS LIMITED NUMBER OF CALLS FOR FREE TIER ACCOUNT,
+               REGISTER NEW ACCOUNT AND REPLACE API_KEY IF NECESSARY
+     */
     private final String BARCODE_URL = "https://api.barcodelookup.com/v3/products?barcode=";
     private final String API_KEY = "ql7sbxolz5lbsihyxuda3lhifvyi9w";
 
@@ -67,9 +74,11 @@ public class AddNewBookActivity extends AppCompatActivity {
         bAddBook = findViewById(R.id.bAddBook);
         bScan = findViewById(R.id.bScan);
 
+        // Connect Firebase Database and Storage, specify path to "imageUpload" folder
         databaseRefImageUpload = FirebaseDatabase.getInstance().getReference("imageUpload");
         storageRefImageUpload = FirebaseStorage.getInstance().getReference("imageUpload");
 
+        // Result launcher to start Upload activity
         ActivityResultLauncher <Intent> uploadImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -81,6 +90,7 @@ public class AddNewBookActivity extends AppCompatActivity {
                 }
         );
 
+        // Allow user to use local images for book image
         ivBookImage.setOnClickListener(view -> {
             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -92,7 +102,6 @@ public class AddNewBookActivity extends AppCompatActivity {
         bAddBook.setOnClickListener(view -> {
             bookName = etBookName.getText().toString();
             if (!bookName.isEmpty()) {
-                // upload book image to firebaseStorage and log URL to DB
                 uploadImage();
 
                 Intent bookInfo = new Intent(this, MainActivity.class);
@@ -116,10 +125,10 @@ public class AddNewBookActivity extends AppCompatActivity {
 
             barcodeLauncher.launch(options);
 
-            // to test api, as no real phone to scan barcode
-            // TODO: remove hardcode book barcode
-//            bookBarcode = "9781350168435";
-
+////            Uncomment the following 3 lines of code only if barcode scanner isn't working,
+////            and need an example barcode to test out 'barcodelookup.com' api
+//
+//             bookBarcode = "9781350168435";
 //            String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
 //            new JsonTask().execute(apiUrl);
 
@@ -133,13 +142,17 @@ public class AddNewBookActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        // upload book image to firebaseStorage and log URL to DB
-        // set myImageUri to default image if user didn't provide one
+        /*
+        Upload book image to firebaseStorage and log URL to DB
+        Set myImageUri to default image if user didn't provide one
+        */
+        // Use default image if user does not provide one
         if (myImageUri == null){
             myImageUri = Uri.parse("android.resource://" + AddNewBookActivity.this.getPackageName()
                     + "/drawable/image");
         }
 
+        // Storing image to Firebase Storage, with timestamp as name
         StorageReference fileReference = storageRefImageUpload.child(System.currentTimeMillis()
                 + "." + getFileExtension(myImageUri));
 
@@ -149,9 +162,9 @@ public class AddNewBookActivity extends AppCompatActivity {
             if (!task.isSuccessful()){
                 throw task.getException();
             }
-
+            // Get storage object download url to link to database
             return fileReference.getDownloadUrl();
-        }).addOnCompleteListener(task -> {
+            }).addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
                 Uri downloadUri = task.getResult();
@@ -159,34 +172,16 @@ public class AddNewBookActivity extends AppCompatActivity {
                     Upload upload = new Upload(etBookName.getText().toString().trim(),
                             downloadUri.toString());
                     String uploadId = databaseRefImageUpload.push().getKey();
+                    // Storing book name and book image download url as key value pair in database
                     databaseRefImageUpload.child(uploadId).setValue(upload);
                 }
-             } else {
+            } else {
                 Toast.makeText(AddNewBookActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
             }
         });
-
-//        fileReference.putFile(myImageUri)
-//                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//
-//                        Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
-//                        Upload upload = new Upload(etBookName.getText().toString().trim(),
-//                                taskSnapshot.getMetadata().getReference().getDownloadUrl())
-//                        String uploadId = databaseRefImageUpload.push().getKey();
-//                        databaseRefImageUpload.child(uploadId).setValue(upload);
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(AddNewBookActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
     }
 
+    // Activity Result Launcher for barcode scanner, and make api call to get book info with barcode
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher =
         registerForActivityResult(new ScanContract(), result -> {
             if (result.getContents() == null) {
@@ -195,11 +190,13 @@ public class AddNewBookActivity extends AppCompatActivity {
             } else {
                 bookBarcode = result.getContents();
                 String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
+                // make api call to 'barcodelookup.com' to get book info
                 new JsonTask().execute(apiUrl);
             }
         });
 
 
+    // Implementing JsonTask for making api call to 'barcodelookup.com'
     private class JsonTask extends AsyncTask<String, String, String> {
         ProgressDialog pd = new ProgressDialog(AddNewBookActivity.this);
 
@@ -220,12 +217,11 @@ public class AddNewBookActivity extends AppCompatActivity {
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
-
                 InputStream stream = connection.getInputStream();
 
                 reader = new BufferedReader(new InputStreamReader(stream));
 
-
+                // Create a buffer to log result as String, then turn it into Json
                 StringBuffer buffer = new StringBuffer();
                 String line = "";
 
@@ -258,8 +254,9 @@ public class AddNewBookActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             try {
+                // Convert String result into Json object
                 JSONObject jsonObject = new JSONObject(result);
-                // Get book image and title from API
+                // Traverse json to get book name and book image
                 bookName = jsonObject.getJSONArray("products").getJSONObject(0)
                         .getString("title");
                 String imageUrl = jsonObject.getJSONArray("products").getJSONObject(0)
@@ -279,6 +276,7 @@ public class AddNewBookActivity extends AppCompatActivity {
         }
     }
 
+    // Implementing ImageLoadTask to allow downloading book image from given url
     private class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
         private final String url;
         private final ImageView imageView;
@@ -291,6 +289,7 @@ public class AddNewBookActivity extends AppCompatActivity {
         @Override
         protected Bitmap doInBackground(Void... params) {
             try {
+                // Download book image from given url
                 URL urlConnection = new URL(url);
                 HttpURLConnection connection = (HttpURLConnection) urlConnection .openConnection();
                 connection.setDoInput(true);
@@ -306,11 +305,13 @@ public class AddNewBookActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
+            // Assign image bitmap to class variable, and show image in the app
             myImageUri = getImageUriFromBitmap(AddNewBookActivity.this, bitmap, bookName);
             imageView.setImageBitmap(bitmap);
         }
     }
 
+    // Process bitmap image, store it locally on the phone, and return local image uri
     public Uri getImageUriFromBitmap (Context inContext, Bitmap inImage, String title) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

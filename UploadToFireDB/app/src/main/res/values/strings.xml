@@ -7,9 +7,13 @@
     <string name="name">name</string>
     <string name="so_far_you_read">So far, you read</string>
     <string name="get_page">Get page #</string>
-    <string name="n">N</string>
-    <string name="v">V</string>
     <string name="_0">0</string>
     <string name="add_new_book">Add new book</string>
+    <string name="add">add</string>
+    <string name="scan">scan</string>
+    <string name="book_image">book image</string>
+    <string name="sort_by_name">sort reading list by book name</string>
+    <string name="sort_by_value">sort reading list by page value</string>
+    <string name="show_collection">show reading list books collection</string>
 
 </resources>

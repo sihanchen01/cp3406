@@ -24,26 +24,28 @@
         android:id="@+id/etBookName"
         android:layout_width="180sp"
         android:layout_height="48dp"
-        android:hint="@string/name"
+        android:autofillHints=""
 
+        android:hint="@string/name"
+        android:textColorHint="#757575"
         app:layout_constraintBottom_toTopOf="@+id/etPageNumber"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPagesRead"
-        android:autofillHints=""
         tools:ignore="TextFields" />
 
     <EditText
         android:id="@+id/etPageNumber"
         android:layout_width="180dp"
         android:layout_height="48dp"
-        android:hint="@string/page_number"
+        android:autofillHints=""
 
+        android:hint="@string/page_number"
+        android:textColorHint="#757575"
         app:layout_constraintBottom_toTopOf="@id/bUpdate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etBookName"
-        android:autofillHints=""
         tools:ignore="TextFields" />
 
     <Button
@@ -57,29 +59,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etPageNumber" />
 
-    <TextView
-        android:id="@+id/tvReadingList"
-        android:layout_width="362dp"
-        android:layout_height="200dp"
-        android:background="@drawable/black"
-        android:hint="@string/currently_no_book"
-        android:paddingHorizontal="24sp"
-        android:paddingVertical="12sp"
-        android:scrollbars="vertical"
-        android:textSize="18sp"
-
-        app:layout_constraintBottom_toTopOf="@id/bAddNewBook"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bUpdate" />
-
     <Button
         android:id="@+id/bSortByName"
         android:layout_width="48sp"
         android:layout_height="48sp"
+        android:background="@drawable/baseline_sort_by_alpha_black_48"
+        android:contentDescription="@string/sort_by_name"
 
-        android:text="@string/n"
         app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
         app:layout_constraintEnd_toStartOf="@+id/bSortByValue"
         app:layout_constraintStart_toStartOf="@+id/tvReadingList"
@@ -89,7 +75,8 @@
         android:id="@+id/bSortByValue"
         android:layout_width="48sp"
         android:layout_height="48sp"
-        android:text="@string/v"
+        android:background="@drawable/baseline_sort_black_48"
+        android:contentDescription="@string/sort_by_value"
 
         app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
         app:layout_constraintStart_toEndOf="@id/bSortByName"
@@ -100,7 +87,9 @@
         android:id="@+id/bShowCollection"
         android:layout_width="48sp"
         android:layout_height="48sp"
-        android:text="c"
+        android:textSize="11sp"
+        android:background="@drawable/baseline_shelves_black_48"
+        android:contentDescription="@string/show_collection"
 
         app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
         app:layout_constraintStart_toEndOf="@id/bSortByValue"
@@ -108,6 +97,25 @@
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <!--  TODO: sort by time added  -->
+
+    <TextView
+        android:id="@+id/tvReadingList"
+        android:layout_width="362dp"
+        android:layout_height="200dp"
+        android:background="@drawable/black"
+        android:hint="@string/currently_no_book"
+        android:paddingHorizontal="24sp"
+        android:paddingVertical="12sp"
+        android:scrollbars="vertical"
+        android:textColorHint="#757575"
+
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/bAddNewBook"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bUpdate" />
+
 
     <Button
         android:id="@+id/bAddNewBook"

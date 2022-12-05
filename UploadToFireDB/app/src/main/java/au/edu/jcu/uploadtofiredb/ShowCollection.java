@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShowCollection extends AppCompatActivity {
-    // attributes for images
     private RecyclerView myRecyclerView;
     private ImageAdapter myAdapter;
 
@@ -36,10 +35,10 @@ public class ShowCollection extends AppCompatActivity {
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("imageUpload");
 
+        // Listen to Firebase Database, everytime Database changes, re-initiate book collection array
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // everytime there is DB changes, re-initiate book collection array
                 myUploads = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot : snapshot.getChildren()){
@@ -47,8 +46,8 @@ public class ShowCollection extends AppCompatActivity {
                     myUploads.add(upload);
                 }
 
+                // Using ImageAdapter to display images in app
                 myAdapter = new ImageAdapter(ShowCollection.this, myUploads);
-
                 myRecyclerView.setAdapter(myAdapter);
             }
 

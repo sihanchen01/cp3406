@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+// ImageAdapter to all load book images into a recycler view
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
     private final Context myContext;
     private final List<Upload> myUploads;
@@ -32,8 +33,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
+        // Loop through image list to add them into view
         Upload uploadCurrent = myUploads.get(position);
         holder.textViewName.setText(uploadCurrent.getImageName());
+        // Using third party tool 'Picasso' to modify image size and display style
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .fit()
@@ -41,11 +44,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 .into(holder.imageView);
     }
 
+    // return size of image list
     @Override
     public int getItemCount() {
         return myUploads.size();
     }
 
+    // Set book image as image view following the book name as text view
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         public TextView textViewName;
         public ImageView imageView;

@@ -43,31 +43,23 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, Integer> readingListUnsorted;
     private TreeMap<String, Integer> readingListSortByName;
     private HashMap<String, Integer> readingListSortByValue;
+
     // current display style, default for sortByName, 1 for sortByValue
     private int currentSortStyle;
     private int pageRead;
+    // The number of pages of user's reading goal
+    // TODO: allow user to set a custom reading goal
     private int monthlyGoal = 85;
     private boolean descOrder = false;
 
-
+    // Constant strings for toast message
     public static final String FAIL_MSG = "Failed to retrieve data!";
     public static final String BOOK_DOES_NOT_EXIST = "This book does not exist in your list";
     public static final String NEW_PAGE_RECORDED = "New page number recorded";
     public static final String LIST_UPDATED = "Reading list updated";
     public static final String NEW_BOOK_ADDED = "New book added into your list!";
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1234) {
-            if (resultCode == RESULT_OK && data != null) {
-                String newBookName = data.getStringExtra("bookName");
-                databaseRefReadingList.child(newBookName).setValue(0);
-                Toast.makeText(MainActivity.this, newBookName, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +78,14 @@ public class MainActivity extends AppCompatActivity {
         // Make reading list vertical scrollable
         tvReadingList.setMovementMethod(new ScrollingMovementMethod());
 
+        // Connect to Firebase database, use path 'books' to store books info,
+        // use path 'pages' to store reading goal number
         databaseRefReadingList = FirebaseDatabase.getInstance().getReference("books");
         databaseRefPageRead = FirebaseDatabase.getInstance().getReference("pages");
         databaseRefPageRead.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Check if reading goal number already exist, if not, initiate with zero
                 pageRead = snapshot.exists() ?
                         ((Number) snapshot.getValue()).intValue() : 0;
                 updatePagesReadPrompt();
@@ -105,11 +100,10 @@ public class MainActivity extends AppCompatActivity {
         databaseRefReadingList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 String bookName = etBookName.getText().toString();
                 if (!bookName.isEmpty()){
                     if (readingListUnsorted.containsKey(bookName)) {
-                        // update pagesRead if book exist in reading list, o/w log new book
+                        // Update pages read only if book name exist in reading list
                         int newPageNumber = Integer.parseInt(etPageNumber.getText().toString());
                         int oldPageNumber = ((Number) readingListUnsorted.get(bookName)).intValue();
                         if (newPageNumber > oldPageNumber) {
@@ -125,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 // Update Hashmap with new values from DB
                 if (snapshot.exists()) {
                     readingListUnsorted = (HashMap) snapshot.getValue();
+                    // Use treemap to sort reading list by book name
                     readingListSortByName = new TreeMap<>(readingListUnsorted);
+                    // Use helper function to sort reading list by page value
                     readingListSortByValue = sortReadingListByValue(readingListUnsorted, descOrder);
 
                     if (currentSortStyle == 1) {
@@ -142,20 +138,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        databaseReference.get().addOnCompleteListener(task -> {
-//            if (!task.isSuccessful()){
-//                Toast.makeText(MainActivity.this, FAIL_MSG, Toast.LENGTH_SHORT).show();
-//            } else {
-//                bookList = (HashMap) task.getResult().getValue();
-//                String books = tvReadingList.getText().toString();
-//                for (String book : bookList.keySet()){
-//                    books = books + book + " (" + bookList.get(book) + ")\n";
-//                }
-//                tvReadingList.setText(books);
-//            }
-//        });
-
-
         bUpdate.setOnClickListener(view -> {
             String bookName = etBookName.getText().toString();
             String pageNumber = etPageNumber.getText().toString();
@@ -167,26 +149,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        bGetPage.setOnClickListener(view -> databaseReference.get().addOnCompleteListener(task -> {
-//            String msg;
-//            if (!task.isSuccessful()){
-//                msg = FAIL_MSG;
-//            } else {
-//                String bookName = etBookName.getText().toString();
-//                if (readingList.get(bookName) == null) {
-//                    msg = BOOK_DOES_NOT_EXIST;
-//                } else {
-//                    msg = LIST_UPDATED;
-//                    String pageNumber = Integer.toString(((Number) readingList.get(bookName)).intValue());
-//                }
-//            }
-//            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-//        }));
-
         bAddNewBook.setOnClickListener(view -> {
             Intent addNewBookIntent = new Intent(this, AddNewBookActivity.class);
+            // Start AddNewBookActivity with request code 1234
             startActivityForResult(addNewBookIntent, 1234);
-
         });
 
         bSortByName.setOnClickListener(view -> {
@@ -208,14 +174,30 @@ public class MainActivity extends AppCompatActivity {
             Intent showCollectionIntent = new Intent(this, ShowCollection.class);
             startActivity(showCollectionIntent);
         });
+    } // End of onCreate
+
+    // When AddNewBookActivity is finished and a new book is added
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1234) {
+            if (resultCode == RESULT_OK && data != null) {
+                String newBookName = data.getStringExtra("bookName");
+                databaseRefReadingList.child(newBookName).setValue(0);
+                Toast.makeText(MainActivity.this, NEW_BOOK_ADDED, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
+    // Update reading goal progress percentage, and prompt user with message accordingly
     @SuppressLint("DefaultLocale")
     private void updatePagesReadPrompt() {
         double progress = ((double) pageRead / (double) monthlyGoal ) * 100;
         tvPagesRead.setText(String.format("So far, you read %s pages.\nYou have accomplished %.1f%% of your monthly goal.", pageRead, progress));
     }
 
+    // Sort reading list by page number
     public LinkedHashMap<String, Integer> sortReadingListByValue (HashMap<String, Integer> hashMap,
                                                                   boolean reverse) {
         LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
@@ -241,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
         return sortedMap;
     } // end of sortReadingListByValue
 
+    // Show reading list in text view
     private void displayReadingList (Map<String, Integer> list) {
         String books = "";
 
