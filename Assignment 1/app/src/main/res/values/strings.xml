@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UploadToFireDB</string>
+    <string name="app_name">Assignment 1</string>
     <string name="currently_no_book">There are no book in your reading list, go ahead add a new book</string>
     <string name="book_name">Name of the book</string>
     <string name="update">update</string>
