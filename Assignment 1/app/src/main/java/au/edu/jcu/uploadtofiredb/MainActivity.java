@@ -1,10 +1,7 @@
 package au.edu.jcu.uploadtofiredb;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -12,6 +9,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     Button bSortByName;
     Button bSortByValue;
     Button bShowCollection;
+    Button bSettings;
     EditText etBookName;
     EditText etPageNumber;
     TextView tvReadingList;
@@ -46,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
 
     // current display style, default for sortByName, 1 for sortByValue
     private int currentSortStyle;
+    // The number of pages user already read
     private int pageRead;
-    // The number of pages of user's reading goal
-    // TODO: allow user to set a custom reading goal
-    private int monthlyGoal = 85;
+    // The number of pages of user's reading goal, default is 100
+    private int monthlyGoal = 100;
     private boolean descOrder = false;
 
     // Constant strings for toast message
@@ -59,6 +63,30 @@ public class MainActivity extends AppCompatActivity {
     public static final String LIST_UPDATED = "Reading list updated";
     public static final String NEW_BOOK_ADDED = "New book added into your list!";
 
+
+    // Settings activity launcher, allow user to set a custom reading goal
+    ActivityResultLauncher<Intent> settingsLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    monthlyGoal = result.getData().getIntExtra("newGoal", monthlyGoal);
+                    // update reading progress message
+                    updatePagesReadPrompt();
+                }
+            }
+    );
+
+    // Add new book activity launcher, allow user to add new book into reading list
+    ActivityResultLauncher<Intent> addNewBookLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    String newBookName = result.getData().getStringExtra("bookName");
+                    databaseRefReadingList.child(newBookName).setValue(0);
+                    Toast.makeText(MainActivity.this, NEW_BOOK_ADDED, Toast.LENGTH_SHORT).show();
+                }
+            }
+    );
 
 
     @Override
@@ -71,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         bSortByName = findViewById(R.id.bSortByName);
         bSortByValue = findViewById(R.id.bSortByValue);
         bShowCollection = findViewById(R.id.bShowCollection);
+        bSettings = findViewById(R.id.bSettings);
         etBookName = findViewById(R.id.etBookName);
         etPageNumber = findViewById(R.id.etPageNumber);
         tvPagesRead = findViewById(R.id.tvPagesRead);
@@ -78,16 +107,20 @@ public class MainActivity extends AppCompatActivity {
         // Make reading list vertical scrollable
         tvReadingList.setMovementMethod(new ScrollingMovementMethod());
 
+
         // Connect to Firebase database, use path 'books' to store books info,
         // use path 'pages' to store reading goal number
         databaseRefReadingList = FirebaseDatabase.getInstance().getReference("books");
         databaseRefPageRead = FirebaseDatabase.getInstance().getReference("pages");
+
+
+        // Firebase database 'pages read' event listener, update reading progress message
         databaseRefPageRead.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // Check if reading goal number already exist, if not, initiate with zero
                 pageRead = snapshot.exists() ?
-                        ((Number) snapshot.getValue()).intValue() : 0;
+                        ((Number) Objects.requireNonNull(snapshot.getValue())).intValue() : 0;
                 updatePagesReadPrompt();
             }
 
@@ -97,15 +130,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Firebase database 'book reading list' event listener, update reading list message
         databaseRefReadingList.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String bookName = etBookName.getText().toString();
-                if (!bookName.isEmpty()){
+                if (!bookName.isEmpty()) {
                     if (readingListUnsorted.containsKey(bookName)) {
                         // Update pages read only if book name exist in reading list
                         int newPageNumber = Integer.parseInt(etPageNumber.getText().toString());
-                        int oldPageNumber = ((Number) readingListUnsorted.get(bookName)).intValue();
+                        int oldPageNumber = ((Number) Objects.requireNonNull(
+                                readingListUnsorted.get(bookName))).intValue();
                         if (newPageNumber > oldPageNumber) {
                             int changes = newPageNumber - oldPageNumber;
                             pageRead += changes;
@@ -120,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     readingListUnsorted = (HashMap) snapshot.getValue();
                     // Use treemap to sort reading list by book name
+                    assert readingListUnsorted != null;
                     readingListSortByName = new TreeMap<>(readingListUnsorted);
                     // Use helper function to sort reading list by page value
                     readingListSortByValue = sortReadingListByValue(readingListUnsorted, descOrder);
@@ -138,10 +175,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bSettings.setOnClickListener(view -> {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            settingsLauncher.launch(settingsIntent);
+        });
+
         bUpdate.setOnClickListener(view -> {
+            // Update book page
             String bookName = etBookName.getText().toString();
             String pageNumber = etPageNumber.getText().toString();
-            if (readingListUnsorted.containsKey(bookName)){
+            if (readingListUnsorted.containsKey(bookName)) {
+                // Update book page in database
                 databaseRefReadingList.child(bookName).setValue(Integer.parseInt(pageNumber));
                 Toast.makeText(MainActivity.this, NEW_PAGE_RECORDED, Toast.LENGTH_SHORT).show();
             } else {
@@ -151,8 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
         bAddNewBook.setOnClickListener(view -> {
             Intent addNewBookIntent = new Intent(this, AddNewBookActivity.class);
-            // Start AddNewBookActivity with request code 1234
-            startActivityForResult(addNewBookIntent, 1234);
+            addNewBookLauncher.launch(addNewBookIntent);
         });
 
         bSortByName.setOnClickListener(view -> {
@@ -176,30 +219,19 @@ public class MainActivity extends AppCompatActivity {
         });
     } // End of onCreate
 
-    // When AddNewBookActivity is finished and a new book is added
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 1234) {
-            if (resultCode == RESULT_OK && data != null) {
-                String newBookName = data.getStringExtra("bookName");
-                databaseRefReadingList.child(newBookName).setValue(0);
-                Toast.makeText(MainActivity.this, NEW_BOOK_ADDED, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     // Update reading goal progress percentage, and prompt user with message accordingly
     @SuppressLint("DefaultLocale")
     private void updatePagesReadPrompt() {
-        double progress = ((double) pageRead / (double) monthlyGoal ) * 100;
-        tvPagesRead.setText(String.format("So far, you read %s pages.\nYou have accomplished %.1f%% of your monthly goal.", pageRead, progress));
+        double progress = ((double) pageRead / (double) monthlyGoal) * 100;
+        tvPagesRead.setText(String.format("So far, you read %s pages.\n" +
+                        "You have accomplished %.1f%% of your monthly goal (%s)."
+                , pageRead, progress, monthlyGoal));
     }
 
+
     // Sort reading list by page number
-    public LinkedHashMap<String, Integer> sortReadingListByValue (HashMap<String, Integer> hashMap,
-                                                                  boolean reverse) {
+    public LinkedHashMap<String, Integer> sortReadingListByValue(HashMap<String, Integer> hashMap, boolean reverse) {
         LinkedHashMap<String, Integer> sortedMap = new LinkedHashMap<>();
         ArrayList<Integer> list = new ArrayList<>();
 
@@ -213,9 +245,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (Integer i : list) {
-            for (Map.Entry<String, Integer> entry : hashMap.entrySet()){
+            for (Map.Entry<String, Integer> entry : hashMap.entrySet()) {
                 Object x = ((Number) entry.getValue()).intValue();
-                if (x.equals(i)){
+                if (x.equals(i)) {
                     sortedMap.put(entry.getKey(), i);
                 }
             }
@@ -223,15 +255,14 @@ public class MainActivity extends AppCompatActivity {
         return sortedMap;
     } // end of sortReadingListByValue
 
-    // Show reading list in text view
-    private void displayReadingList (Map<String, Integer> list) {
-        String books = "";
 
-        for (String book : list.keySet()){
-            books = books + book + " (" + list.get(book) + ")\n\n";
+    // Take in reading list array, convert to string and display in text view
+    private void displayReadingList(Map<String, Integer> list) {
+        StringBuilder books = new StringBuilder();
+        for (String book : list.keySet()) {
+            books.append(book).append(" (").append(list.get(book)).append(")\n\n");
         }
-
-        tvReadingList.setText(books);
+        tvReadingList.setText(books.toString());
         Toast.makeText(MainActivity.this, LIST_UPDATED, Toast.LENGTH_SHORT).show();
     }
 

@@ -5,7 +5,7 @@
     <string name="update">update</string>
     <string name="page_number">page number</string>
     <string name="name">name</string>
-    <string name="so_far_you_read">So far, you read</string>
+    <string name="so_far_you_read">Track your monthly reading progress...</string>
     <string name="get_page">Get page #</string>
     <string name="_0">0</string>
     <string name="add_new_book">Add new book</string>
@@ -15,5 +15,8 @@
     <string name="sort_by_name">sort reading list by book name</string>
     <string name="sort_by_value">sort reading list by page value</string>
     <string name="show_collection">show reading list books collection</string>
+    <string name="monthly_reading_goal">New Reading Goal (default 100)</string>
+    <string name="change">change</string>
+    <string name="settings">settings</string>
 
 </resources>

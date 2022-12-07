@@ -43,6 +43,7 @@
         android:layout_height="48sp"
         android:text="@string/add"
 
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -56,6 +57,7 @@
         android:layout_height="48sp"
         android:text="@string/scan"
 
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
