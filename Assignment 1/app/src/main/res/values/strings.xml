@@ -18,5 +18,6 @@
     <string name="monthly_reading_goal">New Reading Goal (default 100)</string>
     <string name="change">change</string>
     <string name="settings">settings</string>
+    <string name="scroll_view_for_reading_list">scroll view for reading list</string>
 
 </resources>

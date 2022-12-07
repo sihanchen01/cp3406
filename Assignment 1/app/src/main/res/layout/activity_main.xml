@@ -38,8 +38,12 @@
 
     <EditText
         android:id="@+id/etBookName"
-        android:layout_width="180sp"
-        android:layout_height="48dp"
+        android:maxWidth="250sp"
+        android:minWidth="180sp"
+        android:minHeight="48sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
         android:autofillHints=""
 
         android:hint="@string/name"
@@ -54,6 +58,7 @@
         android:id="@+id/etPageNumber"
         android:layout_width="180dp"
         android:layout_height="48dp"
+        android:gravity="center"
         android:autofillHints=""
 
         android:hint="@string/page_number"
@@ -72,7 +77,7 @@
 
         android:textColor="#212121"
         app:cornerRadius="15dp"
-        app:layout_constraintBottom_toTopOf="@id/tvReadingList"
+        app:layout_constraintBottom_toTopOf="@id/svReadingList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etPageNumber"
@@ -85,9 +90,9 @@
         android:background="@drawable/baseline_sort_by_alpha_black_48"
         android:contentDescription="@string/sort_by_name"
 
-        app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
+        app:layout_constraintBottom_toTopOf="@+id/svReadingList"
         app:layout_constraintEnd_toStartOf="@+id/bSortByValue"
-        app:layout_constraintStart_toStartOf="@+id/tvReadingList"
+        app:layout_constraintStart_toStartOf="@+id/svReadingList"
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <Button
@@ -97,7 +102,7 @@
         android:background="@drawable/baseline_sort_black_48"
         android:contentDescription="@string/sort_by_value"
 
-        app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
+        app:layout_constraintBottom_toTopOf="@+id/svReadingList"
         app:layout_constraintStart_toEndOf="@id/bSortByName"
         app:layout_constraintEnd_toStartOf="@+id/bShowCollection"
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
@@ -110,32 +115,33 @@
         android:background="@drawable/baseline_shelves_black_48"
         android:contentDescription="@string/show_collection"
 
-        app:layout_constraintBottom_toTopOf="@+id/tvReadingList"
+        app:layout_constraintBottom_toTopOf="@+id/svReadingList"
         app:layout_constraintStart_toEndOf="@id/bSortByValue"
-        app:layout_constraintEnd_toEndOf="@+id/tvReadingList"
+        app:layout_constraintEnd_toEndOf="@+id/svReadingList"
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
-    <!--  TODO: sort by time added  -->
-
-    <TextView
-        android:id="@+id/tvReadingList"
-        android:layout_width="362dp"
+    <ScrollView
+        android:id="@+id/svReadingList"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="12sp"
         android:layout_height="200dp"
         android:background="@drawable/black"
-        android:hint="@string/currently_no_book"
-        android:paddingHorizontal="24sp"
-        android:paddingVertical="12sp"
-        android:scrollbars="vertical"
-        android:textColor="@color/black"
-        android:textColorHint="#616161"
+        android:contentDescription="@string/scroll_view_for_reading_list"
 
-        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@id/bAddNewBook"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bUpdate" />
+        app:layout_constraintTop_toBottomOf="@id/bUpdate">
 
+        <TableLayout
+            android:id="@+id/tlReadingListRows"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12sp"
+            android:orientation="vertical" />
+
+    </ScrollView>
 
     <Button
         android:id="@+id/bAddNewBook"
@@ -148,7 +154,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvReadingList"
+        app:layout_constraintTop_toBottomOf="@id/svReadingList"
         tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

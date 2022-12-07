@@ -3,10 +3,13 @@ package au.edu.jcu.uploadtofiredb;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,13 +43,17 @@ public class MainActivity extends AppCompatActivity {
     Button bSettings;
     EditText etBookName;
     EditText etPageNumber;
-    TextView tvReadingList;
+    TableLayout tlReadingListRows;
     TextView tvPagesRead;
 
-    private DatabaseReference databaseRefReadingList;
-    private DatabaseReference databaseRefPageRead;
+    // Connect to Firebase database, use path 'books' to store books info,
+    // use path 'pages' to store reading goal number
+    private final DatabaseReference databaseRefReadingList = FirebaseDatabase.getInstance().getReference("books");
+    private final DatabaseReference databaseRefPageRead = FirebaseDatabase.getInstance().getReference("pages");
+
     private HashMap<String, Integer> readingListUnsorted;
     private TreeMap<String, Integer> readingListSortByName;
+    private TreeMap readingListSortByNameReverse = new TreeMap(Collections.reverseOrder());
     private HashMap<String, Integer> readingListSortByValue;
 
     // current display style, default for sortByName, 1 for sortByValue
@@ -103,16 +111,14 @@ public class MainActivity extends AppCompatActivity {
         etBookName = findViewById(R.id.etBookName);
         etPageNumber = findViewById(R.id.etPageNumber);
         tvPagesRead = findViewById(R.id.tvPagesRead);
-        tvReadingList = findViewById(R.id.tvReadingList);
-        // Make reading list vertical scrollable
-        tvReadingList.setMovementMethod(new ScrollingMovementMethod());
+        tlReadingListRows = findViewById(R.id.tlReadingListRows);
 
-
-        // Connect to Firebase database, use path 'books' to store books info,
-        // use path 'pages' to store reading goal number
-        databaseRefReadingList = FirebaseDatabase.getInstance().getReference("books");
-        databaseRefPageRead = FirebaseDatabase.getInstance().getReference("pages");
-
+        // Snackbar to instruct user they could click book text to update page number
+        final Snackbar reminder = Snackbar.make(findViewById(R.id.root),
+                "Reminder: you can click on existing book to fill in name and page number",
+                Snackbar.LENGTH_INDEFINITE);
+        reminder.setAction("Got it", v -> reminder.dismiss());
+        reminder.show();
 
         // Firebase database 'pages read' event listener, update reading progress message
         databaseRefPageRead.addValueEventListener(new ValueEventListener() {
@@ -130,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         // Firebase database 'book reading list' event listener, update reading list message
         databaseRefReadingList.addValueEventListener(new ValueEventListener() {
             @Override
@@ -140,13 +145,11 @@ public class MainActivity extends AppCompatActivity {
                     if (readingListUnsorted.containsKey(bookName)) {
                         // Update pages read only if book name exist in reading list
                         int newPageNumber = Integer.parseInt(etPageNumber.getText().toString());
-                        int oldPageNumber = ((Number) Objects.requireNonNull(
-                                readingListUnsorted.get(bookName))).intValue();
+                        int oldPageNumber = ((Number) readingListUnsorted.get(bookName)).intValue();
                         if (newPageNumber > oldPageNumber) {
                             int changes = newPageNumber - oldPageNumber;
                             pageRead += changes;
                             databaseRefPageRead.setValue(pageRead);
-
                             tvPagesRead.setText(String.format("So far, you read %s pages.", pageRead));
                         }
                     }
@@ -162,9 +165,9 @@ public class MainActivity extends AppCompatActivity {
                     readingListSortByValue = sortReadingListByValue(readingListUnsorted, descOrder);
 
                     if (currentSortStyle == 1) {
-                        displayReadingList(readingListSortByValue);
+                        generateReadingList(readingListSortByValue);
                     } else {
-                        displayReadingList(readingListSortByName);
+                        generateReadingList(readingListSortByName);
                     }
                 }
             }
@@ -200,7 +203,13 @@ public class MainActivity extends AppCompatActivity {
 
         bSortByName.setOnClickListener(view -> {
             // Sort by keys
-            displayReadingList(readingListSortByName);
+            if (descOrder) {
+                generateReadingList(readingListSortByName);
+            } else {
+                readingListSortByNameReverse.putAll(readingListSortByName);
+                generateReadingList(readingListSortByNameReverse);
+            }
+            descOrder = !descOrder;
         });
 
         bSortByValue.setOnClickListener(view -> {
@@ -208,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             currentSortStyle = 1;
             // Sort by value
             readingListSortByValue = sortReadingListByValue(readingListUnsorted, descOrder);
-            displayReadingList(readingListSortByValue);
+            generateReadingList(readingListSortByValue);
         });
 
         // TODO: add sort by time added function
@@ -256,14 +265,24 @@ public class MainActivity extends AppCompatActivity {
     } // end of sortReadingListByValue
 
 
-    // Take in reading list array, convert to string and display in text view
-    private void displayReadingList(Map<String, Integer> list) {
-        StringBuilder books = new StringBuilder();
+    // Take in reading list array, convert to table row and inflate into Scroll View on Main
+    private void generateReadingList(Map<String, Integer> list) {
+        tlReadingListRows.removeAllViews();
         for (String book : list.keySet()) {
-            books.append(book).append(" (").append(list.get(book)).append(")\n\n");
-        }
-        tvReadingList.setText(books.toString());
-        Toast.makeText(MainActivity.this, LIST_UPDATED, Toast.LENGTH_SHORT).show();
-    }
+            String output = String.format("%s (%s)", book, list.get(book));
+            getLayoutInflater().inflate(R.layout.book, tlReadingListRows);
 
+            View lastRow = tlReadingListRows.getChildAt(tlReadingListRows.getChildCount() - 1);
+            TableRow addedBookRow = (TableRow) lastRow;
+            View bookText = addedBookRow.getChildAt(0);
+            TextView bookTextView = (TextView) bookText;
+            bookTextView.setText(output);
+
+            addedBookRow.setOnClickListener(view -> {
+                etBookName.setText(book);
+                etPageNumber.setText(String.valueOf(list.get(book)));
+            });
+        }
+        Toast.makeText(this, LIST_UPDATED, Toast.LENGTH_SHORT).show();
+    }
 }

@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +25,8 @@ public class ShowCollection extends AppCompatActivity {
     private ImageAdapter myAdapter;
 
     private List<Upload> myUploads;
+    // Connect to firebase database, get image reference url
+    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("imageUpload");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +37,12 @@ public class ShowCollection extends AppCompatActivity {
         myRecyclerView.setHasFixedSize(true);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("imageUpload");
+       // Snackbar to remind user they could click book image to search it on Google
+        final Snackbar reminder = Snackbar.make(findViewById(R.id.layoutShowCollection),
+                "Reminder: you can click on book image to search it on Google",
+                Snackbar.LENGTH_INDEFINITE);
+        reminder.setAction("Got it", v -> reminder.dismiss());
+        reminder.show();
 
         // Listen to Firebase Database, everytime Database changes, re-initiate book collection array
         databaseReference.addValueEventListener(new ValueEventListener() {

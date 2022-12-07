@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -40,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Objects;
 
 public class AddNewBookActivity extends AppCompatActivity {
@@ -63,7 +65,7 @@ public class AddNewBookActivity extends AppCompatActivity {
                REGISTER NEW ACCOUNT AND REPLACE API_KEY IF NECESSARY
      */
     final String BARCODE_URL = "https://api.barcodelookup.com/v3/products?barcode=";
-    final String API_KEY = "ql7sbxolz5lbsihyxuda3lhifvyi9w";
+    final String API_KEY = "1yj2dsx0im12xzovuqen2k1vlyjrbh";
 
 
     // Activity Launcher for barcode scanner, and make api call to get book info with barcode
@@ -118,12 +120,14 @@ public class AddNewBookActivity extends AppCompatActivity {
         });
 
 
+        // Add book into reading list
         bAddBook.setOnClickListener(view -> {
             bookName = etBookName.getText().toString();
             if (!bookName.isEmpty()) {
                 uploadImage();
 
                 Intent bookInfo = new Intent(this, MainActivity.class);
+                bookName = bookName.substring(0, 1).toUpperCase() + bookName.substring(1);
                 bookInfo.putExtra("bookName", bookName);
                 setResult(RESULT_OK, bookInfo);
                 finish();
@@ -190,8 +194,9 @@ public class AddNewBookActivity extends AppCompatActivity {
                 Toast.makeText(AddNewBookActivity.this, "Upload successful", Toast.LENGTH_LONG).show();
                 Uri downloadUri = task.getResult();
                 if (downloadUri != null) {
-                    Upload upload = new Upload(etBookName.getText().toString().trim(),
-                            downloadUri.toString());
+                    bookName = etBookName.getText().toString().trim();
+                    bookName = bookName.substring(0, 1).toUpperCase() + bookName.substring(1);
+                    Upload upload = new Upload(bookName, downloadUri.toString());
                     String uploadId = databaseRefImageUpload.push().getKey();
                     // Storing book name and book image download url as key value pair in database
                     assert uploadId != null;

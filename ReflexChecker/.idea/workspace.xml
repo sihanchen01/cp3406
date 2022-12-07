@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AndroidLayouts">
+    <shared>
+      <config />
+    </shared>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74d437f0-179c-4125-9aa5-3e50d8cbd605" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/AddNewBookActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/AddNewBookActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/drawable/black.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/drawable/black.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/layout/activity_add_new_book.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/layout/activity_add_new_book.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values-night/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values-night/themes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/colors.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/themes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\sihan\.android\avd\Pixel_6_API_30.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -28,6 +29,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2IaBPcCGo15keSO7jxY0iqgPc2A" />
   <component name="ProjectViewState">
@@ -38,6 +42,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -114,5 +119,16 @@
       <updated>1670409791361</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
