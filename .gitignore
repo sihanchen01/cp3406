@@ -1,4 +1,9 @@
-#built application files
+# gitignore
+.gitignore
+
+# vim
+~
+# built application files
 *.apk
 *.ap_
 *.aab
@@ -32,6 +37,6 @@ build/
 captures/
 output.json
     
-#NDK
+# NDK
 obj/
 .externalNativeBuild
