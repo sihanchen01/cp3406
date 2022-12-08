@@ -62,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
     // The number of pages of user's reading goal, default is 100
     private int monthlyGoal = 100;
     private boolean descOrder = false;
+    // Name of book to be update
+    private String bookName;
+    // Number of pages to be update
+    private String pageNumber;
 
     // Constant strings for toast message
     public static final String FAIL_MSG = "Failed to retrieve data!";
@@ -111,6 +115,16 @@ public class MainActivity extends AppCompatActivity {
         etPageNumber = findViewById(R.id.etPageNumber);
         tvPagesRead = findViewById(R.id.tvPagesRead);
         tlReadingListRows = findViewById(R.id.tlReadingListRows);
+
+        // Check if there are saved instance, so app won't crash when rotate
+        if (savedInstanceState != null) {
+            bookName = savedInstanceState.getString("bookName");
+            pageNumber = savedInstanceState.getString("pageNumber");
+            readingListUnsorted = (HashMap) savedInstanceState.getSerializable("readingList");
+            // Re-assign value from saved instance
+            etBookName.setText(bookName);
+            etPageNumber.setText(pageNumber);
+        }
 
         // Snackbar to instruct user they could click book text to update page number
         final Snackbar reminder = Snackbar.make(findViewById(R.id.root),
@@ -227,6 +241,15 @@ public class MainActivity extends AppCompatActivity {
         });
     } // End of onCreate
 
+
+    // Saved instance state so app will not crash when rotate
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("bookName", bookName);
+        outState.putString("pageNumber", pageNumber);
+        outState.putSerializable("readingList", readingListUnsorted);
+    }
 
     // Update reading goal progress percentage, and prompt user with message accordingly
     @SuppressLint("DefaultLocale")

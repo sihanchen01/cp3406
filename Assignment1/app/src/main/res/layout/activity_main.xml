@@ -1,6 +1,14 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/root"
@@ -10,46 +18,48 @@
         android:id="@+id/bSettings"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/baseline_settings_black_48"
-        android:contentDescription="@string/settings"
 
-        app:layout_constraintBottom_toTopOf="@+id/tvPagesRead"
+
+        android:contentDescription="@string/settings"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
+        app:layout_constraintHorizontal_bias="0.947"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvPagesRead"
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="12sp"
         android:layout_height="60dp"
+        android:layout_marginHorizontal="12sp"
         android:background="@drawable/black"
-        android:padding="12sp"
         android:hint="@string/so_far_you_read"
-        android:textSize="14sp"
-        android:textColorHint="#757575"
+        android:padding="12sp"
         android:textColor="@color/black"
+        android:textColorHint="#757575"
+        android:textSize="14sp"
 
-        app:layout_constraintBottom_toTopOf="@+id/etBookName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bSettings" />
+        app:layout_constraintTop_toBottomOf="@id/bSettings" />
 
     <EditText
         android:id="@+id/etBookName"
-        android:maxWidth="250sp"
-        android:minWidth="180sp"
-        android:minHeight="48sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:layout_marginTop="20dp"
         android:autofillHints=""
-
+        android:gravity="center"
         android:hint="@string/name"
+        android:maxWidth="250sp"
+
+        android:minWidth="180sp"
+        android:minHeight="48sp"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toTopOf="@+id/etPageNumber"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvPagesRead"
         tools:ignore="TextFields" />
@@ -63,7 +73,6 @@
 
         android:hint="@string/page_number"
         android:textColorHint="#757575"
-        app:layout_constraintBottom_toTopOf="@id/bUpdate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etBookName"
@@ -73,12 +82,13 @@
         android:id="@+id/bUpdate"
         android:layout_width="120dp"
         android:layout_height="48dp"
-        android:text="@string/update"
+        android:layout_marginTop="20dp"
 
+        android:text="@string/update"
         android:textColor="#212121"
         app:cornerRadius="15dp"
-        app:layout_constraintBottom_toTopOf="@id/svReadingList"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etPageNumber"
         tools:ignore="TextContrastCheck" />
@@ -87,59 +97,58 @@
         android:id="@+id/bSortByName"
         android:layout_width="48sp"
         android:layout_height="48sp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/baseline_sort_by_alpha_black_48"
-        android:contentDescription="@string/sort_by_name"
 
-        app:layout_constraintBottom_toTopOf="@+id/svReadingList"
+        android:contentDescription="@string/sort_by_name"
         app:layout_constraintEnd_toStartOf="@+id/bSortByValue"
-        app:layout_constraintStart_toStartOf="@+id/svReadingList"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <Button
         android:id="@+id/bSortByValue"
         android:layout_width="48sp"
         android:layout_height="48sp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/baseline_sort_black_48"
-        android:contentDescription="@string/sort_by_value"
 
-        app:layout_constraintBottom_toTopOf="@+id/svReadingList"
-        app:layout_constraintStart_toEndOf="@id/bSortByName"
+        android:contentDescription="@string/sort_by_value"
         app:layout_constraintEnd_toStartOf="@+id/bShowCollection"
+        app:layout_constraintStart_toEndOf="@id/bSortByName"
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <Button
         android:id="@+id/bShowCollection"
         android:layout_width="48sp"
         android:layout_height="48sp"
-        android:textSize="11sp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/baseline_shelves_black_48"
         android:contentDescription="@string/show_collection"
 
-        app:layout_constraintBottom_toTopOf="@+id/svReadingList"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/bSortByValue"
-        app:layout_constraintEnd_toEndOf="@+id/svReadingList"
         app:layout_constraintTop_toBottomOf="@+id/bUpdate" />
 
     <ScrollView
         android:id="@+id/svReadingList"
         android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_marginHorizontal="12sp"
-        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/black"
-        android:contentDescription="@string/scroll_view_for_reading_list"
 
-        app:layout_constraintBottom_toTopOf="@id/bAddNewBook"
+        android:contentDescription="@string/scroll_view_for_reading_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bUpdate">
+        app:layout_constraintTop_toBottomOf="@id/bSortByValue">
 
         <TableLayout
             android:id="@+id/tlReadingListRows"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12sp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:padding="12sp" />
 
     </ScrollView>
 
@@ -152,9 +161,12 @@
         app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/svReadingList"
+        app:layout_constraintVertical_bias="0.3"
         tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -82,6 +83,19 @@ public class AddNewBookActivity extends AppCompatActivity {
             }
     );
 
+    // Activity launcher to open local gallery to pick image
+    ActivityResultLauncher<Intent> uploadImageLauncher = registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+        result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                Intent data = result.getData();
+                assert data != null;
+                myImageUri = data.getData();
+                ivBookImage.setImageURI(myImageUri);
+            }
+        }
+    );
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,22 +106,16 @@ public class AddNewBookActivity extends AppCompatActivity {
         bAddBook = findViewById(R.id.bAddBook);
         bScan = findViewById(R.id.bScan);
 
+        // Read saved instance state
+        if (savedInstanceState != null) {
+            bookName = savedInstanceState.getString("bookName");
+            myImageUri = savedInstanceState.getParcelable("imageUri");
+            ivBookImage.setImageURI(myImageUri);
+        }
+
         // Connect Firebase Database and Storage, specify path to "imageUpload" folder
         databaseRefImageUpload = FirebaseDatabase.getInstance().getReference("imageUpload");
         storageRefImageUpload = FirebaseStorage.getInstance().getReference("imageUpload");
-
-        // Result launcher to start Upload activity
-        ActivityResultLauncher<Intent> uploadImageLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        assert data != null;
-                        myImageUri = data.getData();
-                        ivBookImage.setImageURI(myImageUri);
-                    }
-                }
-        );
 
         // Allow user to use local images for book image
         ivBookImage.setOnClickListener(view -> {
@@ -146,16 +154,21 @@ public class AddNewBookActivity extends AppCompatActivity {
 
             barcodeLauncher.launch(options);
 
-
 //            // Uncomment if barcode scanner isn't working,
 //            // use a static barcode 9781350168435 to test out 'barcodelookup.com' api
 //
 //            bookBarcode = "9781350168435";
 //            String apiUrl = BARCODE_URL + bookBarcode + "&key=" + API_KEY;
 //            new JsonTask().execute(apiUrl);
-
-
         });
+    }
+
+    // Save instance state so app won't crash when rotate
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("bookName", bookName);
+        outState.putParcelable("imageUri", myImageUri);
     }
 
     private String getFileExtension(Uri uri) {

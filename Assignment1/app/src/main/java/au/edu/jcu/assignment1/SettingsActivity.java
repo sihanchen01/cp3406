@@ -1,5 +1,6 @@
 package au.edu.jcu.assignment1;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -12,6 +13,8 @@ public class SettingsActivity extends AppCompatActivity {
     TextView tvNewGoal;
     Button bChange;
 
+    private String newGoal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,11 +23,15 @@ public class SettingsActivity extends AppCompatActivity {
         tvNewGoal = findViewById(R.id.tvNewGoal);
         bChange = findViewById(R.id.bChange);
 
+        // Read saved instance state
+        if (savedInstanceState != null){
+            newGoal = savedInstanceState.getString("newGoal");
+        }
 
         // Change monthly reading goal with valid user input
         bChange.setOnClickListener(view -> {
             Intent backToMain = new Intent();
-            String newGoal = tvNewGoal.getText().toString();
+            newGoal = tvNewGoal.getText().toString();
             try {
                 int pages = Integer.parseInt(newGoal);
                 // Pages must be greater than 0
@@ -40,5 +47,12 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(this, "Invalid input, try again!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // Save instance state so app won't crash when rotate
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("newGoal", newGoal);
     }
 }
