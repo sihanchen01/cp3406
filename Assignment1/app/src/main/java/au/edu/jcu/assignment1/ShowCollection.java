@@ -21,7 +21,8 @@ import java.util.List;
 public class ShowCollection extends AppCompatActivity {
     private RecyclerView myRecyclerView;
     private ImageAdapter myAdapter;
-
+    // Track if it is first time view got created, only show snackbar on first run
+    private boolean firstTime = true;
     private List<Upload> myUploads;
     // Connect to firebase database, get image reference url
     private final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("imageUpload");
@@ -35,12 +36,21 @@ public class ShowCollection extends AppCompatActivity {
         myRecyclerView.setHasFixedSize(true);
         myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Read saved instance value
+        if (savedInstanceState != null){
+            firstTime = savedInstanceState.getBoolean("firstTime");
+        }
+
        // Snackbar to remind user they could click book image to search it on Google
         final Snackbar reminder = Snackbar.make(findViewById(R.id.layoutShowCollection),
                 "Reminder: you can click on book image to search it on Google",
                 Snackbar.LENGTH_INDEFINITE);
-        reminder.setAction("Got it", v -> reminder.dismiss());
-        reminder.show();
+        reminder.setAction("Got it", v -> {
+            reminder.dismiss();
+            firstTime = false;
+        });
+        // Only show snack bar at first time
+        if (firstTime) reminder.show();
 
         // Listen to Firebase Database, everytime Database changes, re-initiate book collection array
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -63,5 +73,11 @@ public class ShowCollection extends AppCompatActivity {
                 Toast.makeText(ShowCollection.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("firstTime", firstTime);
     }
 }

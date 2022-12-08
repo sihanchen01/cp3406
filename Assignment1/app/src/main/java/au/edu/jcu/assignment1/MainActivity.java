@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     private HashMap<String, Integer> readingListUnsorted;
     private TreeMap<String, Integer> readingListSortByName;
-    private TreeMap readingListSortByNameReverse = new TreeMap(Collections.reverseOrder());
+    private final TreeMap<String, Integer> readingListSortByNameReverse
+            = new TreeMap<String, Integer>(Collections.reverseOrder());
     private HashMap<String, Integer> readingListSortByValue;
 
     // current display style, default for sortByName, 1 for sortByValue
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private String bookName;
     // Number of pages to be update
     private String pageNumber;
+    // Track if it is first time view got created, only show snackbar on first run
+    private boolean firstTime = true;
 
     // Constant strings for toast message
     public static final String FAIL_MSG = "Failed to retrieve data!";
@@ -121,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
             bookName = savedInstanceState.getString("bookName");
             pageNumber = savedInstanceState.getString("pageNumber");
             readingListUnsorted = (HashMap) savedInstanceState.getSerializable("readingList");
+            firstTime = savedInstanceState.getBoolean("firstTime");
             // Re-assign value from saved instance
             etBookName.setText(bookName);
             etPageNumber.setText(pageNumber);
@@ -130,8 +134,12 @@ public class MainActivity extends AppCompatActivity {
         final Snackbar reminder = Snackbar.make(findViewById(R.id.root),
                 "Reminder: you can click on existing book to fill in name and page number",
                 Snackbar.LENGTH_INDEFINITE);
-        reminder.setAction("Got it", v -> reminder.dismiss());
-        reminder.show();
+        reminder.setAction("Got it", v -> {
+            reminder.dismiss();
+            firstTime = false;
+        });
+        // Only show snack bar at first time
+        if (firstTime) reminder.show();
 
         // Firebase database 'pages read' event listener, update reading progress message
         databaseRefPageRead.addValueEventListener(new ValueEventListener() {
@@ -223,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 generateReadingList(readingListSortByNameReverse);
             }
             descOrder = !descOrder;
+            Toast.makeText(this, LIST_UPDATED, Toast.LENGTH_SHORT).show();
         });
 
         bSortByValue.setOnClickListener(view -> {
@@ -231,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
             // Sort by value
             readingListSortByValue = sortReadingListByValue(readingListUnsorted, descOrder);
             generateReadingList(readingListSortByValue);
+            Toast.makeText(this, LIST_UPDATED, Toast.LENGTH_SHORT).show();
         });
 
         // TODO: add sort by time added function
@@ -249,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putString("bookName", bookName);
         outState.putString("pageNumber", pageNumber);
         outState.putSerializable("readingList", readingListUnsorted);
+        outState.putBoolean("firstTime", firstTime);
     }
 
     // Update reading goal progress percentage, and prompt user with message accordingly
@@ -305,6 +316,5 @@ public class MainActivity extends AppCompatActivity {
                 etPageNumber.setText(String.valueOf(list.get(book)));
             });
         }
-        Toast.makeText(this, LIST_UPDATED, Toast.LENGTH_SHORT).show();
     }
 }
