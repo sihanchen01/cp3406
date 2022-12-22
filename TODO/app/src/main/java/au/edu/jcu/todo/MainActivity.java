@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
         todoList.setOnItemClickListener((adapterView, view, position, id) -> {
             TextView itemView = (TextView) view;
+            Toast.makeText(this, "Task \"" + itemView.getText() + "\" completed!",
+                    Toast.LENGTH_SHORT).show();
             adapter.remove(itemView.getText().toString());
         });
 
@@ -70,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
             currentItems.add(adapter.getItem(i));
         }
         dataSource.edit().putStringSet("items", currentItems).apply();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        dataSource.edit().clear().apply();
     }
 
     @Override
