@@ -42,14 +42,18 @@ public class AddItemActivity extends AppCompatActivity {
             String item_description = userInput.getText().toString();
             Set<String> items = dataSource.getStringSet("items", null);
             assert items != null; // can be commented out while nothing is added to dataSource
+            item_description = item_description.trim();
+            if (item_description.isEmpty()){
+                Toast.makeText(this, "Task is empty!", Toast.LENGTH_SHORT).show();
+            } else {
+                Set<String> newItems = new HashSet<>(items);
+                newItems.add(item_description);
 
-            Set<String> newItems = new HashSet<>(items);
-            newItems.add(item_description);
+                dataSource.edit().clear().putStringSet("items", newItems).apply();
 
-            dataSource.edit().clear().putStringSet("items", newItems).apply();
-
-            Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
-            finish();
+                Toast.makeText(this, "Added", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         });
         dataSource = getSharedPreferences("todo items", Context.MODE_PRIVATE);
     }
