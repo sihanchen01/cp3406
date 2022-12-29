@@ -43,6 +43,7 @@ public class FoleyActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         deviceHeight = displayMetrics.heightPixels;
         deviceWidth = displayMetrics.widthPixels;
+        audioManager = new AudioManager();
 
         Collections.addAll(natureSounds, R.raw.nature_heavy_rain_drops,
                 R.raw.nature_light_rain_loop, R.raw.nature_rain_and_thunder_storm,
@@ -89,40 +90,23 @@ public class FoleyActivity extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-        String action = "";
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (x > deviceWidth/2.0 && y > deviceHeight/2.0){
-                audioManager = new AudioManager(this, sounds.get(buttonText).get(0));
+                audioManager.loadSoundFile(this,sounds.get(buttonText).get(0));
             }
             else if (x > deviceWidth/2.0 && y < deviceHeight/2.0){
-                audioManager = new AudioManager(this, sounds.get(buttonText).get(1));
+                audioManager.loadSoundFile(this,sounds.get(buttonText).get(1));
             }
             else if (x < deviceWidth/2.0 && y > deviceHeight/2.0){
-                audioManager = new AudioManager(this, sounds.get(buttonText).get(2));
+                audioManager.loadSoundFile(this,sounds.get(buttonText).get(2));
             }
             else {
-                audioManager = new AudioManager(this, sounds.get(buttonText).get(3));
+                audioManager.loadSoundFile(this,sounds.get(buttonText).get(3));
             }
+        } else if (event.getAction() == MotionEvent.ACTION_UP){
+            audioManager.playSound();
         }
-        audioManager.playSound(1.0f, 2.0f);
-
-        switch (event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-                action = "started";
-                break;
-            case MotionEvent.ACTION_MOVE:
-                action = "moved";
-                break;
-            case MotionEvent.ACTION_UP:
-                action = "ended";
-                break;
-        }
-
-        Log.i("touch", String.format(Locale.getDefault(), "%.2f %.2f %s", x, y, action));
-        // 2274 (y), 1080(x)
-        Log.i("device", String.format("h: %s, w: %s", deviceHeight, deviceWidth));
-
         return true;
     }
 
@@ -142,4 +126,11 @@ public class FoleyActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (audioManager != null){
+            audioManager.destroy();
+        }
+    }
 }
