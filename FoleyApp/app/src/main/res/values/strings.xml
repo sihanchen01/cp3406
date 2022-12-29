@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FoleyApp</string>
+    <string name="nature">nature</string>
+    <string name="animal">animal</string>
+    <string name="human">human</string>
+    <string name="technology">technology</string>
+</resources>
