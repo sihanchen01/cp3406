@@ -10,18 +10,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="74d437f0-179c-4125-9aa5-3e50d8cbd605" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/AddNewBookActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/AddNewBookActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/java/au/edu/jcu/uploadtofiredb/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Assignment 1/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.4/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Stopwatch2/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Stopwatch2/.idea/gradle.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\sihan\.android\avd\Pixel_6_API_30.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\sihan\.android\avd\Pixel_6_API_30_webcam_.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />

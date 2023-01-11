@@ -22,7 +22,7 @@ public class StopwatchActivity extends AppCompatActivity {
     private Button bSettings;
     private int speed;
 
-    ActivityResultLauncher<Intent> settingsIntent = registerForActivityResult(
+    ActivityResultLauncher<Intent> settingsIntentLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
@@ -79,7 +79,7 @@ public class StopwatchActivity extends AppCompatActivity {
 
     private void settingsClicked() {
         Intent intent = new Intent(StopwatchActivity.this, SettingsActivity.class);
-        settingsIntent.launch(intent);
+        settingsIntentLauncher.launch(intent);
     }
 
     private void enableStopwatch() {
