@@ -32,14 +32,14 @@ public class PickGamePage extends AppCompatActivity {
 
         bReflex = findViewById(R.id.bReflex);
         bReflex.setOnClickListener(v -> {
-            Intent reflexWelcomeIntent = new Intent(PickGamePage.this, ReflexWelcome.class);
+            Intent reflexWelcomeIntent = new Intent(PickGamePage.this, ReflexSetting.class);
             reflexWelcomeIntent.putExtra("currentUser", currentUser);
             startActivity(reflexWelcomeIntent);
         });
 
         bMath = findViewById(R.id.bMath);
         bMath.setOnClickListener(v -> {
-            Intent mathIntent = new Intent(PickGamePage.this, MathWelcome.class);
+            Intent mathIntent = new Intent(PickGamePage.this, MathSetting.class);
             mathIntent.putExtra("currentUser", currentUser);
             startActivity(mathIntent);
         });

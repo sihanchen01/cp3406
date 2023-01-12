@@ -13,7 +13,7 @@
         android:theme="@style/Theme.EducationalGame"
         tools:targetApi="31">
         <activity
-            android:name=".MathWelcome"
+            android:name=".MathSetting"
             android:parentActivityName=".PickGamePage"
             android:exported="false">
             <meta-data
@@ -50,7 +50,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ReflexWelcome"
+            android:name=".ReflexSetting"
             android:exported="false"
             android:parentActivityName=".PickGamePage">
             <meta-data
@@ -60,7 +60,7 @@
         <activity
             android:name=".ReflexGame"
             android:exported="false"
-            android:parentActivityName=".ReflexWelcome">
+            android:parentActivityName=".ReflexSetting">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -68,7 +68,7 @@
         <activity
             android:name=".MathGame"
             android:exported="false"
-            android:parentActivityName=".MathWelcome">
+            android:parentActivityName=".MathSetting">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-public class MathWelcome extends AppCompatActivity {
+public class MathSetting extends AppCompatActivity {
     Button bStart;
 
     UserModel currentUser;
@@ -22,7 +22,7 @@ public class MathWelcome extends AppCompatActivity {
 
         bStart = findViewById(R.id.bMathStart);
         bStart.setOnClickListener(v -> {
-            Intent mathGameStart = new Intent(MathWelcome.this, MathGame.class);
+            Intent mathGameStart = new Intent(MathSetting.this, MathGame.class);
             mathGameStart.putExtra("currentUser", currentUser);
             startActivity(mathGameStart);
         });

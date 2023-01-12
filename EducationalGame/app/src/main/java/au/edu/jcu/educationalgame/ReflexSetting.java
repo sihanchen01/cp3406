@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class ReflexWelcome extends AppCompatActivity {
+public class ReflexSetting extends AppCompatActivity {
     Button bStart;
     SeekBar sbDifficulty;
     TextView tvDifficulty;
@@ -64,7 +64,7 @@ public class ReflexWelcome extends AppCompatActivity {
         });
         // Start Reflex Game
         bStart.setOnClickListener(v -> {
-            Intent reflexGameStart = new Intent(ReflexWelcome.this, ReflexGame.class);
+            Intent reflexGameStart = new Intent(ReflexSetting.this, ReflexGame.class);
             reflexGameStart.putExtra("difficulty", difficulty);
             reflexGameStart.putExtra("currentUser", currentUser);
             startActivity(reflexGameStart);
