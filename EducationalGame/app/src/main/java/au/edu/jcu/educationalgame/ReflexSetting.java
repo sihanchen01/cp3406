@@ -13,7 +13,7 @@ public class ReflexSetting extends AppCompatActivity {
     SeekBar sbDifficulty;
     TextView tvDifficulty;
 
-    int difficulty;
+    int difficulty = 1;
     String difficultyLevelInfo;
     final int GAME_MODE_EASY = 1;
     final int GAME_MODE_MEDIUM = 2;

@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ public class ReflexGame extends AppCompatActivity {
     TextView tvScore;
     TextView tvTime;
     TextView tvInstruction;
+    ImageView ivReflexDirection;
     TextView[] allTextViews;
     ConstraintLayout constraintLayout;
     SwipeListener swipeListener;
@@ -68,6 +70,7 @@ public class ReflexGame extends AppCompatActivity {
         currentUser = intent.getParcelableExtra("currentUser");
 
         constraintLayout = findViewById(R.id.root);
+        ivReflexDirection = findViewById(R.id.ivReflexDirection);
         tvGameMode = findViewById(R.id.tvReflexGameMode);
         tvInstruction = findViewById(R.id.tvReflexInfo);
         tvScore = findViewById(R.id.tvReflexScore);
@@ -95,6 +98,9 @@ public class ReflexGame extends AppCompatActivity {
     }
 
     private void gameStart() {
+        // When game starts, hide instruction text box, make reflex direction arrow visible.
+        tvInstruction.setVisibility(View.INVISIBLE);
+        ivReflexDirection.setVisibility(View.VISIBLE);
         generateRandomDirection();
         swipeListener = new SwipeListener(constraintLayout);
     }
@@ -106,7 +112,7 @@ public class ReflexGame extends AppCompatActivity {
                 score, currentUser.getReflexScore()));
 
         // check if score is a new highest score, update DB if it is
-        if (currentUser.getReflexScore() < score * difficulty_level) {
+        if (currentUser.getReflexScore() < (score * difficulty_level)) {
             boolean success = dataBaseHelper.updateScoreboard(currentUser.getUserName(),
                     score * difficulty_level, "reflex");
             String prompt;
@@ -120,6 +126,9 @@ public class ReflexGame extends AppCompatActivity {
         constraintLayout.setBackgroundColor(Color.RED);
         // TODO: remove "running" if can't find a good use
         running = false;
+        // When game is over, hide reflex direction arrow, make instruction text visible.
+        ivReflexDirection.setVisibility(View.INVISIBLE);
+        tvInstruction.setVisibility(View.VISIBLE);
         tvInstruction.setText(String.format(Locale.getDefault(), "Game Over: %s", gameOverInfo));
         float secondsTotal = (float) interval/1000;
         tvTime.setText(String.format(Locale.getDefault(), "Time left: 0.00 / %.2fs", secondsTotal));
@@ -139,16 +148,20 @@ public class ReflexGame extends AppCompatActivity {
         randomDirection = (int) (Math.random()*3);
         switch (randomDirection){
             case SWIPE_UP:
-                tvInstruction.setText(R.string.up);
+//                tvInstruction.setText(R.string.up);
+                ivReflexDirection.setImageResource(R.drawable.ic_round_arrow_upward_24);
                 break;
             case SWIPE_DOWN:
-                tvInstruction.setText(R.string.down);
+//                tvInstruction.setText(R.string.down);
+                ivReflexDirection.setImageResource(R.drawable.ic_round_arrow_downward_24);
                 break;
             case SWIPE_LEFT:
-                tvInstruction.setText(R.string.left);
+//                tvInstruction.setText(R.string.left);
+                ivReflexDirection.setImageResource(R.drawable.ic_round_arrow_back_24);
                 break;
             case SWIPE_RIGHT:
-                tvInstruction.setText(R.string.right);
+//                tvInstruction.setText(R.string.right);
+                ivReflexDirection.setImageResource(R.drawable.ic_round_arrow_forward_24);
                 break;
         }
     }
@@ -196,10 +209,10 @@ public class ReflexGame extends AppCompatActivity {
                                 // Horizontal movement is more significant
                                 if (Math.abs(xMove) > threshold && Math.abs(velocityX) > velocity_threshold) {
                                     if (xMove > 0) {
-                                        // swipe right
+                                        // user swipe right
                                         userGesture = SWIPE_RIGHT;
                                     } else {
-                                        // swipe left
+                                        // user swipe left
                                         userGesture = SWIPE_LEFT;
                                     }
                                     checkUserGesture();
@@ -209,10 +222,10 @@ public class ReflexGame extends AppCompatActivity {
                                 // Vertical movement is more significant
                                 if (Math.abs(yMove) > threshold && Math.abs(velocityY) > velocity_threshold) {
                                     if (yMove > 0) {
-                                        // swipe up
+                                        // user swipe up
                                         userGesture = SWIPE_DOWN;
                                     } else {
-                                        // swipe down
+                                        // user swipe down
                                         userGesture = SWIPE_UP;
                                     }
                                     checkUserGesture();
