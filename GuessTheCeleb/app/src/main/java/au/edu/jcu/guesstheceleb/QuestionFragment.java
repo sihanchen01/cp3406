@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.Random;
 
 import au.edu.jcu.guesstheceleb.game.Game;
 import au.edu.jcu.guesstheceleb.game.Question;
@@ -40,6 +43,7 @@ public class QuestionFragment extends Fragment {
     private ImageView ivCelebImage;
     private String[] celebNames;
     private ListView lvCelebNames;
+    private ArrayAdapter<String> celebNamesAdapter;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -81,10 +85,10 @@ public class QuestionFragment extends Fragment {
         lvCelebNames = view.findViewById(R.id.lvCelebNames);
 
         // Create array adapter for celeb names
-        ArrayAdapter<String> celebNamesAdapter = new ArrayAdapter<String>(view.getContext(),
-                android.R.layout.simple_list_item_1);
-        lvCelebNames.setAdapter(celebNamesAdapter);
-        celebNamesAdapter.addAll(celebNames);
+        celebNamesAdapter = new ArrayAdapter<String>(view.getContext(),
+                R.layout.celeb_name);
+
+
 
         return view;
     }
@@ -95,10 +99,31 @@ public class QuestionFragment extends Fragment {
         stateListener = (StateListener) context;
     }
 
-    public void setCurrentGame(Game game) {
+    public void startGame(Game game) {
+        // Clear previous list view
+        celebNamesAdapter.clear();
+        // Set game
         currentGame = game;
+        // Set list view
         currentQuestion = game.getFirstQuestion();
         celebNames = currentQuestion.getPossibleNames();
+        // Shuffle names
+        Random rand = new Random();
+        for (int i = 0; i < celebNames.length; i++) {
+			int randomIndexToSwap = rand.nextInt(celebNames.length);
+			String temp = celebNames[randomIndexToSwap];
+			celebNames[randomIndexToSwap] = celebNames[i];
+			celebNames[i] = temp;
+		}
+        celebNamesAdapter.addAll(celebNames);
+        lvCelebNames.setAdapter(celebNamesAdapter);
+        // enable listener
+        lvCelebNames.setOnItemClickListener((adapterView, view1, i, l) -> {
+            TextView item = (TextView) view1;
+            userGuess = item.getText().toString();
+            showNextQuestion();
+        });
+        // Set image
         ivCelebImage.setImageBitmap(currentQuestion.getCelebrityImage());
     }
 
@@ -109,6 +134,7 @@ public class QuestionFragment extends Fragment {
     public void showNextQuestion() {
         // Check user input
         boolean guessIsCorrect = currentQuestion.check(userGuess);
+        currentGame.updateScore(guessIsCorrect);
         if (guessIsCorrect && !currentGame.isGameOver()){
             // Go to next question if guess is right, and there are still more questions
             currentQuestion = currentGame.next();
@@ -118,5 +144,9 @@ public class QuestionFragment extends Fragment {
             // Game over if guess is wrong
             stateListener.onUpdate(State.GAME_OVER);
         }
+    }
+
+    public void stopGame() {
+        lvCelebNames.setOnItemClickListener(null);
     }
 }

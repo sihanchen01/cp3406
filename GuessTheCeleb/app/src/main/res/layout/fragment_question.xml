@@ -9,18 +9,16 @@
     <!-- TODO: Update blank fragment layout -->
     <ImageView
         android:id="@+id/ivCelebImage"
-        android:layout_height="200sp"
-        android:layout_width="200sp"
-        android:layout_marginTop="100sp"
-        android:layout_marginBottom="50sp"
-        android:layout_gravity="center"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="0sp"
+        android:layout_weight="1"
+        android:layout_marginBottom="24sp"
+        android:layout_gravity="center" />
 
     <ListView
         android:id="@+id/lvCelebNames"
         android:layout_width="match_parent"
-        android:layout_height="400sp"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="374dp" />
+        android:layout_height="0sp"
+        android:layout_weight="3" />
 
 </LinearLayout>

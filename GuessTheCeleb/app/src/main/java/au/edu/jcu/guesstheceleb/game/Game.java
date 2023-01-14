@@ -21,7 +21,7 @@ public class Game {
     }
 
     public boolean isGameOver() {
-        return questionNumber == count();
+        return questionNumber + 1 == count();
     }
 
     public Question next() {
@@ -29,7 +29,7 @@ public class Game {
             return null;
         }
         questionNumber += 1;
-        return questions[questionNumber - 1];
+        return questions[questionNumber];
     }
 
     public void updateScore(boolean correct) {

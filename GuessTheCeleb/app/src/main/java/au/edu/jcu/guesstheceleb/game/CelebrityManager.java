@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class CelebrityManager {
     private String assetPath;
-    private String[] imageNames;
+    private static String[] imageNames;
     private AssetManager assetManager;
 
     public CelebrityManager(AssetManager assetManager, String assetPath) {
@@ -40,7 +40,7 @@ public class CelebrityManager {
         return WordUtils.capitalize(celebNameRaw);
     }
 
-    public int count() {
+    public static int count() {
         return imageNames.length;
     }
 }

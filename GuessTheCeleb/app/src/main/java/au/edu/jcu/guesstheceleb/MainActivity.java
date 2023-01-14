@@ -33,11 +33,7 @@ public class MainActivity extends AppCompatActivity implements StateListener{
         gameFragment = (GameFragment) fragmentManager.findFragmentById(R.id.fragGame);
         statusFragment = (StatusFragment) fragmentManager.findFragmentById(R.id.fragStatus);
         questionFragment = (QuestionFragment) fragmentManager.findFragmentById(R.id.fragQuestion);
-        Log.i("GettingFrags", "Game: " + gameFragment);
-        Log.i("GettingFrags", "statue: " + statusFragment);
-        Log.i("GettingFrags", "question: " + questionFragment);
         isLargeScreen = statusFragment != null;
-        Log.i("GettingFrags", "isLarge: " + isLargeScreen);
 
         AssetManager assetManager = getAssets();
         CelebrityManager celebrityManager = new CelebrityManager(assetManager, "celebs");
@@ -73,7 +69,9 @@ public class MainActivity extends AppCompatActivity implements StateListener{
             switch(state){
                 case START_GAME:
                     Game game = gameBuilder.create(level);
-                    questionFragment.setCurrentGame(game);
+                    statusFragment.setMessage("Time remaining: 10 sec...");
+                    statusFragment.setScore("Score: 0");
+                    questionFragment.startGame(game);
                     break;
                 case CONTINUE_GAME:
                     statusFragment.setScore(questionFragment.getScore());
@@ -81,10 +79,10 @@ public class MainActivity extends AppCompatActivity implements StateListener{
                 case GAME_OVER:
                     statusFragment.setScore(questionFragment.getScore());
                     statusFragment.setMessage("Game Over!");
+                    questionFragment.stopGame();
                     break;
             }
         } else {
-
         }
     }
 }

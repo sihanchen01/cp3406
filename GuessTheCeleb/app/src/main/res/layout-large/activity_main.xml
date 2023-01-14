@@ -5,40 +5,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragGame"
-        android:layout_width="382dp"
+        android:layout_width="0sp"
+        app:layout_constraintWidth_percent="0.35"
         android:layout_height="match_parent"
-        android:layout_marginStart="4dp"
+        android:name="au.edu.jcu.guesstheceleb.GameFragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/fragStatus"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout="@layout/fragment_game" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragStatus"
-        android:layout_width="888dp"
-        android:layout_height="234dp"
-        android:layout_marginEnd="4dp"
+        android:name="au.edu.jcu.guesstheceleb.StatusFragment"
+        android:layout_width="0sp"
+        app:layout_constraintWidth_percent="0.65"
+        android:layout_height="0sp"
+        app:layout_constraintHeight_percent="0.25"
         app:layout_constraintBottom_toTopOf="@+id/fragQuestion"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5"
         tools:layout="@layout/fragment_status" />
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragQuestion"
-        android:layout_width="866dp"
-        android:layout_height="559dp"
+        android:name="au.edu.jcu.guesstheceleb.QuestionFragment"
+        android:layout_width="0sp"
+        app:layout_constraintWidth_percent="0.65"
+        android:layout_height="0sp"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fragGame"
         app:layout_constraintTop_toBottomOf="@+id/fragStatus"
-        app:layout_constraintVertical_bias="0.5"
         tools:layout="@layout/fragment_question" />
 
 
