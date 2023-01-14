@@ -1,12 +1,15 @@
 package au.edu.jcu.guesstheceleb;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +26,9 @@ public class StatusFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private StateListener stateListener;
+    private TextView tvInfo;
+    private TextView tvScore;
 
     public StatusFragment() {
         // Required empty public constructor
@@ -59,6 +65,23 @@ public class StatusFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_status, container, false);
+        View view = inflater.inflate(R.layout.fragment_status, container, false);
+        tvInfo = view.findViewById(R.id.tvStatusInfo);
+        tvScore = view.findViewById(R.id.tvStatusScore);
+        return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        stateListener = (StateListener) context;
+    }
+
+    public void setMessage(String text) {
+        tvInfo.setText((text));
+    }
+
+    public void setScore(String text) {
+        tvScore.setText(text);
     }
 }

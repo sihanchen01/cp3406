@@ -248,6 +248,7 @@ public class ReflexGame extends AppCompatActivity {
             totalTries += 1;
             countDownTimer.cancel();
             if (userGesture == randomDirection) {
+                // TODO: add sound effect
                 constraintLayout.setBackgroundColor(Color.GREEN);
                 score += 1;
                 // Interval shrinks each time user answers with a correct swipe gesture,

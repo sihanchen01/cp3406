@@ -1,12 +1,24 @@
 package au.edu.jcu.guesstheceleb;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import org.apache.commons.lang3.builder.Diff;
+
+import java.util.Locale;
+
+import au.edu.jcu.guesstheceleb.game.Difficulty;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +35,8 @@ public class GameFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private StateListener stateListener;
+    private Difficulty level;
 
     public GameFragment() {
         // Required empty public constructor
@@ -59,6 +73,52 @@ public class GameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_game, container, false);
+        View view = inflater.inflate(R.layout.fragment_game, container, false);
+        final Spinner spinner = view.findViewById(R.id.gameSpinner);
+        final TextView tvLevelInfo = view.findViewById(R.id.tvCurrentLevel);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        level = Difficulty.EASY;
+                        break;
+                    case 1:
+                        level = Difficulty.MEDIUM;
+                        break;
+                    case 2:
+                        level = Difficulty.HARD;
+                        break;
+                    case 3:
+                        level = Difficulty.EXPERT;
+                        break;
+                }
+                tvLevelInfo.setText(String.format(Locale.getDefault(), "Level: %s", level));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                level = Difficulty.EASY;
+            }
+        });
+
+        // handle button click by triggering state listener update
+        // and record current difficulty level
+        view.findViewById(R.id.bPlay).setOnClickListener(v -> {
+            stateListener.onUpdate(State.START_GAME);
+        });
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        stateListener = (StateListener) context;
+    }
+
+    public Difficulty getLevel() {
+        return level;
     }
 }

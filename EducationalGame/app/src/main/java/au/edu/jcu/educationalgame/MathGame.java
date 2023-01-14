@@ -366,6 +366,7 @@ public class MathGame extends AppCompatActivity {
         bReset.performClick();
         countDownTimer.cancel();
         if (userInput == correctResult) {
+            // TODO: add sound effect
             constraintLayout.setBackgroundColor(Color.GREEN);
             score += 1;
             tvScore.setText(String.format("Score: %s", score));

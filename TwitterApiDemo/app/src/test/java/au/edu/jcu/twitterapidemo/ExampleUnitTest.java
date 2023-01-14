@@ -1,4 +1,4 @@
-package au.edu.jcu.guesstheceleb;
+package au.edu.jcu.twitterapidemo;
 
 import org.junit.Test;
 

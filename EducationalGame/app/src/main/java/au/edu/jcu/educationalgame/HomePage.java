@@ -57,6 +57,7 @@ public class HomePage extends AppCompatActivity {
                    boolean success = dataBaseHelper.createNewUser(newUser);
                    if (success) {
                        Toast.makeText(HomePage.this, "New User "+ username + " created!", Toast.LENGTH_LONG).show();
+                       bSignIn.performClick();
                    }
                }
            }

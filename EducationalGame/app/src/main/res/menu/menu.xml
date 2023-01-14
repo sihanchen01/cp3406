@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/itTwitterButton"
+        android:title="@string/share"
+        android:icon="@drawable/ic_twitter"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
         android:id="@+id/itShareButton"
         android:title="@string/share"
         android:icon="@drawable/ic_baseline_share_24"

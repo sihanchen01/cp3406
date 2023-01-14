@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/hello_blank_fragment" />
+        android:text="Time remaining: 10 sec..." />
 
     <TextView
         android:id="@+id/tvStatusScore"

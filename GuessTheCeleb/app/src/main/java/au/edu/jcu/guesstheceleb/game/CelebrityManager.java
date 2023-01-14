@@ -1,18 +1,19 @@
-package au.edu.jcu.guesstheceleb;
+package au.edu.jcu.guesstheceleb.game;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import org.apache.commons.text.WordUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ImageManager {
+public class CelebrityManager {
     private String assetPath;
     private String[] imageNames;
     private AssetManager assetManager;
 
-    ImageManager(AssetManager assetManager, String assetPath) {
+    public CelebrityManager(AssetManager assetManager, String assetPath) {
         this.assetManager = assetManager;
         this.assetPath = assetPath;
         try {
@@ -22,7 +23,7 @@ public class ImageManager {
         }
     }
 
-    Bitmap get(int i) {
+    public Bitmap get(int i) {
         try {
             InputStream stream = assetManager.open(assetPath+"/" + imageNames[i]);
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
@@ -30,5 +31,16 @@ public class ImageManager {
         } catch (IOException e){
             return null;
         }
+    }
+
+    public String getName(int i) {
+        // Remove file extension, and replace '-' with ' ' in filename
+        String celebNameRaw = imageNames[i].split("\\.")[0].replace("-", " ");
+        // Capitalize first letters of first/last name
+        return WordUtils.capitalize(celebNameRaw);
+    }
+
+    public int count() {
+        return imageNames.length;
     }
 }

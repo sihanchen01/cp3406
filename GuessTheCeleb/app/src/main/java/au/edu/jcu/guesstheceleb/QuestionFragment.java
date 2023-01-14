@@ -1,12 +1,20 @@
 package au.edu.jcu.guesstheceleb;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+
+import au.edu.jcu.guesstheceleb.game.Game;
+import au.edu.jcu.guesstheceleb.game.Question;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +31,15 @@ public class QuestionFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private StateListener stateListener;
+    private Game currentGame;
+    private Question currentQuestion;
+    private String userGuess;
+
+    private ImageView ivCelebImage;
+    private String[] celebNames;
+    private ListView lvCelebNames;
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -59,6 +76,47 @@ public class QuestionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_question, container, false);
+        View view = inflater.inflate(R.layout.fragment_question, container, false);
+        ivCelebImage = view.findViewById(R.id.ivCelebImage);
+        lvCelebNames = view.findViewById(R.id.lvCelebNames);
+
+        // Create array adapter for celeb names
+        ArrayAdapter<String> celebNamesAdapter = new ArrayAdapter<String>(view.getContext(),
+                android.R.layout.simple_list_item_1);
+        lvCelebNames.setAdapter(celebNamesAdapter);
+        celebNamesAdapter.addAll(celebNames);
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        stateListener = (StateListener) context;
+    }
+
+    public void setCurrentGame(Game game) {
+        currentGame = game;
+        currentQuestion = game.getFirstQuestion();
+        celebNames = currentQuestion.getPossibleNames();
+        ivCelebImage.setImageBitmap(currentQuestion.getCelebrityImage());
+    }
+
+    public String getScore() {
+        return currentGame.getScore();
+    }
+
+    public void showNextQuestion() {
+        // Check user input
+        boolean guessIsCorrect = currentQuestion.check(userGuess);
+        if (guessIsCorrect && !currentGame.isGameOver()){
+            // Go to next question if guess is right, and there are still more questions
+            currentQuestion = currentGame.next();
+            ivCelebImage.setImageBitmap(currentQuestion.getCelebrityImage());
+            stateListener.onUpdate(State.CONTINUE_GAME);
+        } else {
+            // Game over if guess is wrong
+            stateListener.onUpdate(State.GAME_OVER);
+        }
     }
 }

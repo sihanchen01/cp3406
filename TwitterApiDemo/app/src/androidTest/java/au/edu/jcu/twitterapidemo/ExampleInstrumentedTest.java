@@ -1,4 +1,4 @@
-package au.edu.jcu.guesstheceleb;
+package au.edu.jcu.twitterapidemo;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("au.edu.jcu.guesstheceleb", appContext.getPackageName());
+        assertEquals("au.edu.jcu.twitterapidemo", appContext.getPackageName());
     }
 }
