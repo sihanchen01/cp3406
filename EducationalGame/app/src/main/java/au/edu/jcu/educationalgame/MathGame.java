@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Locale;
+import java.util.Random;
 
 public class MathGame extends AppCompatActivity {
     TextView tvInfo;
@@ -46,17 +47,20 @@ public class MathGame extends AppCompatActivity {
 
     int x;
     int y;
-    int z;
-    int correctResult;
+    // Common used degrees for trigonometry
+    int[] commonDegrees = new int[]{0, 30, 45, 60, 90};
+    // z holds trigonometry operation
+    double z = 0.0;
+    double correctResult;
     int randomMathOperator1;
     int randomMathOperator2;
 
     // score for consecutive correct math equation solved
     int score;
     // Set initial userInput -999 as sentinel to prevent ZeroDivision error
-    int userInput = -999;
-    // Time for each round, 8000ms.
-    int gameRoundTime = 8000;
+    double userInput = -999;
+    // Time for each round, 15 seconds.
+    int gameRoundTime = 15_000;
 
     CountDownTimer countDownTimer;
 
@@ -255,13 +259,41 @@ public class MathGame extends AppCompatActivity {
     }
 
     private void generateRandomEquation() {
-        // Generate random x, y, z values
+        // Generate random int x, y values
         x = (int) (java.lang.Math.random()*9);
         y = (int) (java.lang.Math.random()*9);
-        z = (int) (java.lang.Math.random()*9);
         tvX.setText(String.format(Locale.getDefault(), "(%s", x));
         tvY.setText(String.format(Locale.getDefault(), "%s)", y));
-        tvZ.setText(String.valueOf(z));
+
+        String trigonometryOperator = null;
+        int chosenDegree = 0;
+        // Random again if trigonometry calculation return 0, to avoid zero divisor
+        while (z == 0) {
+            // Generate a random trigonometry operation
+            Random rand = new Random();
+            chosenDegree = commonDegrees[rand.nextInt(commonDegrees.length)];
+            // Math.sin use radians instead of degree as input, so convert to radians first
+            double radians = Math.toRadians(chosenDegree);
+            // Random trigonometry operator and store calculated value to z
+            int trigonometryOpIndex = rand.nextInt(3);
+            switch (trigonometryOpIndex){
+                case 0:
+                    trigonometryOperator = "sin";
+                    z = Math.sin(radians);
+                    break;
+                case 1:
+                    trigonometryOperator = "cos";
+                    z = Math.cos(radians);
+                    break;
+                case 2:
+                    trigonometryOperator = "tan";
+                    z = Math.tan(radians);
+                    break;
+            }
+            tvZ.setText(String.format(Locale.getDefault(),
+                    "%s(%s)", trigonometryOperator, chosenDegree));
+        }
+
         randomMathOperator1 = (int) (java.lang.Math.random()*3);
         randomMathOperator2 = (int) (java.lang.Math.random()*3);
         // Calculate result value.
@@ -282,16 +314,16 @@ public class MathGame extends AppCompatActivity {
         }
         switch (randomMathOperator2){
             case ADD:
-                correctResult = temp + z;
+                correctResult = Math.round((temp + z) * 100.0) / 100.0;
                 break;
             case MINUS:
-                correctResult = temp - z;
+                correctResult = Math.round((temp - z) * 100.0) / 100.0;
                 break;
             case MULTIPLY:
-                correctResult = temp * z;
+                correctResult = Math.round((temp * z) * 100.0) / 100.0;
                 break;
             case DIVIDE:
-                correctResult = temp / z;
+                correctResult = Math.round((temp / z) * 100.0) / 100.0;
                 break;
         }
         tvK.setText(String.valueOf(correctResult));
@@ -340,17 +372,17 @@ public class MathGame extends AppCompatActivity {
         Log.i("mathCal", "temp: " + temp);
         switch(tvMathOp2.getText().toString()) {
             case "+":
-                userInput = temp + z;
+                userInput = Math.round((temp + z) * 100.0) / 100.0;
                 break;
             case "-":
-                userInput = temp - z;
+                userInput = Math.round((temp - z) * 100.0) / 100.0;
                 break;
             case "*":
-                userInput = temp * z;
+                userInput = Math.round((temp * z) * 100.0) / 100.0;
                 break;
             case "/":
                 try {
-                    userInput = temp / z;
+                    userInput = Math.round((temp / z) * 100.0) / 100.0;
                 } catch (ArithmeticException e) {
                     Toast.makeText(this, "Can't divide by Zero!", Toast.LENGTH_LONG).show();
                     bReset.performClick();

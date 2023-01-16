@@ -23,7 +23,7 @@
     <string name="game_mode_medium">Game Mode: Medium</string>
     <string name="game_mode_hard">Game Mode: Hard</string>
     <string name="game_instruction_reflex">Wait for a direction show up on the screen, and swipe to that direction.\n\nGame ends when timer runs out, or an incorrect gesture given. Timer for each round will gradually decrease till it reaches minimum time interval for selected difficulty.\n\nScore will be multiplied by difficulty level.</string>
-    <string name="game_instruction_math">Solve random Math equations by fill in correct Math Operators (+, -, *, /) at two missing places.\n\nGame ends when timer runs out, or wrong input was given. Timer for each round is 8 seconds.\n\n*\tDivision used is "Integer Division" (1/3=0, 7/2=3)\n\n**\tStuck at current problem?\n\t\tShake phone to change math equation</string>
+    <string name="game_instruction_math">Solve random Math equations by fill in correct Math Operators (+, -, *, /) at two missing places.\n\nGame ends when timer runs out, or wrong input was given. Timer for each round is 15 seconds (unchangeable!).\n\n*\tDivision used is "Integer Division" (1/3=0, 7/2=3)\n\n**\tStuck at current problem?\n\t\tShake phone to change math equation</string>
     <string name="homepage_welcome">Hello,\nPick a Game and gets started</string>
     <string name="reflex">Reflex</string>
     <string name="math">Math</string>
