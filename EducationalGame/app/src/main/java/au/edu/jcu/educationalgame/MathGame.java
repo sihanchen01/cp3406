@@ -7,6 +7,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -63,6 +65,9 @@ public class MathGame extends AppCompatActivity {
     int gameRoundTime = 15_000;
 
     CountDownTimer countDownTimer;
+    // Sound effects
+    MediaPlayer correctAnswerSound;
+    MediaPlayer wrongAnswerSound;
 
     UserModel currentUser;
     DataBaseHelper dataBaseHelper;
@@ -145,6 +150,10 @@ public class MathGame extends AppCompatActivity {
                 }
             }
         });
+
+        // Initiate media player
+        correctAnswerSound = MediaPlayer.create(this, R.raw.correct_answer);
+        wrongAnswerSound = MediaPlayer.create(this, R.raw.wrong_answer);
 
         // Initiate sensor
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -398,12 +407,13 @@ public class MathGame extends AppCompatActivity {
         bReset.performClick();
         countDownTimer.cancel();
         if (userInput == correctResult) {
-            // TODO: add sound effect
             constraintLayout.setBackgroundColor(Color.GREEN);
+            correctAnswerSound.start();
             score += 1;
             tvScore.setText(String.format("Score: %s", score));
             gameStart();
         } else {
+            wrongAnswerSound.start();
             gameOver("Wrong Choice");
         }
    }

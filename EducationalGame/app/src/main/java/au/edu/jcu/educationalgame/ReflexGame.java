@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.GestureDetector;
@@ -55,6 +56,9 @@ public class ReflexGame extends AppCompatActivity {
     boolean running = true;
     // Timer for each reflex test, game over when time ran out.
     CountDownTimer countDownTimer;
+    // Sound effects
+    MediaPlayer correctAnswerSound;
+    MediaPlayer wrongAnswerSound;
 
     UserModel currentUser;
     DataBaseHelper dataBaseHelper;
@@ -94,6 +98,11 @@ public class ReflexGame extends AppCompatActivity {
         }
         minimum_interval = 500 * (4 - difficulty_level);
         interval = 3 * minimum_interval;
+
+        // Initiate media player
+        correctAnswerSound = MediaPlayer.create(this, R.raw.correct_answer);
+        wrongAnswerSound = MediaPlayer.create(this, R.raw.wrong_answer);
+
         gameStart();
     }
 
@@ -248,8 +257,8 @@ public class ReflexGame extends AppCompatActivity {
             totalTries += 1;
             countDownTimer.cancel();
             if (userGesture == randomDirection) {
-                // TODO: add sound effect
                 constraintLayout.setBackgroundColor(Color.GREEN);
+                correctAnswerSound.start();
                 score += 1;
                 // Interval shrinks each time user answers with a correct swipe gesture,
                 // until it reaches minimum time interval (100ms).
@@ -259,6 +268,7 @@ public class ReflexGame extends AppCompatActivity {
                 tvScore.setText(String.format("Score: %s", score ));
                 generateRandomDirection();
             } else {
+                wrongAnswerSound.start();
                 gameOver("Wrong Input");
             }
        }
